@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShieldBackup - Interface d'administration</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #667eea;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        header {
+            background: rgba(102, 126, 234, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+            height: 90px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-logo {
+            height: 85px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
+        }
+
+        .header-text h1 {
+            margin: 0;
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+        .header-text h2 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 400;
+            opacity: 0.95;
+        }
+
+        .header-right {
+            font-size: 13px;
+            opacity: 0.85;
+        }
+
+        .layout {
+            display: flex;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        nav {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 20px 0;
+            margin: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+        }
+
+        nav ul { list-style: none; }
+
+        nav a {
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            display: block;
+            padding: 12px 30px;
+            transition: all 0.3s ease;
+            border-radius: 10px;
+            margin: 5px 15px;
+        }
+
+        nav a.active {
+            color: white !important;
+            background: linear-gradient(135deg, #667eea 0%, #5a67d8 100%);
+            transform: translateX(5px);
+        }
+
+        nav a:hover:not(.active) {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateX(3px);
+        }
+
+        main {
+            flex: 1;
+            padding: 0 20px 20px 0;
+            margin-top: 0;
+        }
+
+        .section:first-child {
+            margin-top: 20px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        small {
+            color: #666;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #5a67d8 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .stat-card:hover { transform: translateY(-5px); }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        th {
+            background: linear-gradient(135deg, #667eea 0%, #5a67d8 100%);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tr:hover td {
+            background: #f8f9ff;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-ok { background: #d4edda; color: #155724; }
+        .badge-ko { background: #f8d7da; color: #721c24; }
+        .badge-warning { background: #fff3cd; color: #856404; }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        input, textarea {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #5a67d8 100%);
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #5a67d8 100%);
+            border-radius: 10px;
+        }
+
+        .notification {
+            position: fixed;
+            top: 110px;
+            right: 20px;
+            padding: 15px 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 2000;
+        }
+
+        .notification.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .contact-card {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.15);
+        }
+
+        .contact-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .contact-email {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .contact-email::before {
+            content: "✉ ";
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 30px 20px;
+            font-size: 13px;
+            opacity: 0.85;
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+        }
+
+        .scroll-margin {
+            scroll-margin-top: 120px;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                height: auto;
+                padding: 15px;
+                gap: 10px;
+            }
+
+            .layout {
+                flex-direction: column;
+            }
+
+            nav {
+                width: 100%;
+                position: relative;
+                top: 0;
+                margin: 10px;
+            }
+
+            main {
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="header-left">
+        <img src="C:\Users\Nicolas\Desktop\SAE Piloter Projet\SAE Piloter Projet\img\ShieldBackup.png" class="header-logo" alt="ShieldBackup Logo">
+        <div class="header-text">
+            <h1>ShieldBackup</h1>
+            <h2>Interface de système de sauvegarde</h2>
+        </div>
+    </div>
+    <div class="header-right">
+        Dernière mise à jour : <span id="currentTime"></span>
+    </div>
+</header>
+
+<div class="layout">
+    <nav>
+        <ul>
+            <li><a href="#dashboard">📊 Tableau de bord</a></li>
+            <li><a href="#declare">➕ Déclaration serveurs</a></li>
+            <li><a href="#planning">⏰ Planification</a></li>
+            <li><a href="#gantt">📅 Planning visuel</a></li>
+            <li><a href="#manual">▶️ Sauvegarde ponctuelle</a></li>
+            <li><a href="#scan">🔍 Scan des archives</a></li>
+            <li><a href="#contact">📞 Contact</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="dashboard" class="section scroll-margin">
+            <h2>📊 Tableau de bord</h2>
+            <small>Vue globale de l'état de vos sauvegardes</small>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Serveurs actifs</div>
+                    <div class="stat-value">2</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Sauvegardes OK</div>
+                    <div class="stat-value">1</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Alertes</div>
+                    <div class="stat-value">1</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Espace total</div>
+                    <div class="stat-value">700Go</div>
+                </div>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin: 30px 0;">
+                <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    <h3 style="color: #667eea; margin-bottom: 20px; font-size: 18px;">📈 Répartition des états</h3>
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                        <canvas id="statusChart" width="200" height="200"></canvas>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                            <div style="width: 16px; height: 16px; background: #28a745; border-radius: 3px; margin-right: 10px;"></div>
+                            <span style="font-size: 14px;">Sauvegardes OK (50%)</span>
+                        </div>
+                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                            <div style="width: 16px; height: 16px; background: #dc3545; border-radius: 3px; margin-right: 10px;"></div>
+                            <span style="font-size: 14px;">Erreurs (50%)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    <h3 style="color: #667eea; margin-bottom: 20px; font-size: 18px;">💾 Utilisation de l'espace</h3>
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                        <canvas id="storageChart" width="200" height="200"></canvas>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                            <div style="width: 16px; height: 16px; background: #667eea; border-radius: 3px; margin-right: 10px;"></div>
+                            <span style="font-size: 14px;">Utilisé: 160 Go (22.8%)</span>
+                        </div>
+                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                            <div style="width: 16px; height: 16px; background: #e0e0e0; border-radius: 3px; margin-right: 10px;"></div>
+                            <span style="font-size: 14px;">Disponible: 540 Go (77.2%)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+                    <h3 style="color: #667eea; margin-bottom: 20px; font-size: 18px;">🧠 Utilisation mémoire</h3>
+                    <div style="display: flex; align-items: center; justify-content: center;">
+                        <canvas id="memoryChart" width="200" height="200"></canvas>
+                    </div>
+                    <div style="margin-top: 20px;">
+                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                            <div style="width: 16px; height: 16px; background: #ff9800; border-radius: 3px; margin-right: 10px;"></div>
+                            <span style="font-size: 14px;">Utilisée: 12 Go (75%)</span>
+                        </div>
+                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
+                            <div style="width: 16px; height: 16px; background: #e0e0e0; border-radius: 3px; margin-right: 10px;"></div>
+                            <span style="font-size: 14px;">Disponible: 4 Go (25%)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Serveur</th>
+                        <th>Dernière sauvegarde</th>
+                        <th>État</th>
+                        <th>Archives</th>
+                        <th>Espace utilisé</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>serveur-A</strong></td>
+                        <td>2025-12-08 02:00</td>
+                        <td><span class="badge badge-ok">✓ OK</span></td>
+                        <td>AJ.0 à AJ.6 (7 archives)</td>
+                        <td>
+                            120 Go / 500 Go
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 24%"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn-primary btn-small" onclick="viewDetails('serveur-A')">Détails</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>serveur-LOGS</strong></td>
+                        <td>2025-12-01 03:15</td>
+                        <td><span class="badge badge-ko">✗ ERREUR</span></td>
+                        <td>AJ.0, AJ.1 (2 archives)</td>
+                        <td>
+                            40 Go / 200 Go
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 20%"></div>
+                            </div>
+                        </td>
+                        <td>
+                            <button class="btn-primary btn-small" onclick="viewDetails('serveur-LOGS')">Détails</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button class="btn-primary" onclick="refreshData()">🔄 Actualiser</button>
+        </section>
+
+        <section id="declare" class="section scroll-margin">
+            <h2>➕ Déclaration des serveurs</h2>
+            <small>Configuration des serveurs à sauvegarder</small>
+
+            <form onsubmit="saveServer(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nom du serveur *</label>
+                        <input type="text" id="serverName" placeholder="Ex: serveur-A" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Adresse IP *</label>
+                        <input type="text" id="serverIP" placeholder="Ex: 192.168.10.15" required>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Port SSH</label>
+                        <input type="number" id="sshPort" value="22">
+                    </div>
+                    <div class="form-group">
+                        <label>Répertoire de destination</label>
+                        <input type="text" id="destDir" placeholder="/archives/serveur-A">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Répertoires à sauvegarder (un par ligne)</label>
+                    <textarea id="backupDirs" placeholder="/var/log&#10;/etc&#10;/home/app/data"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Services à arrêter pendant la sauvegarde</label>
+                    <textarea id="services" placeholder="apache2&#10;mysql&#10;redis"></textarea>
+                </div>
+
+                <button type="submit" class="btn-primary">💾 Enregistrer le serveur</button>
+                <button type="button" class="btn-secondary" onclick="document.querySelector('form').reset()">↺ Réinitialiser</button>
+            </form>
+        </section>
+
+        <section id="planning" class="section scroll-margin">
+            <h2>⏰ Planification & échantillonnage</h2>
+            <small>Gestion des fréquences de sauvegarde et rotation des archives</small>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Serveur</th>
+                        <th>Fréquence</th>
+                        <th>Heure</th>
+                        <th>Politique de rétention</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>serveur-A</strong></td>
+                        <td><span class="badge badge-ok">Journalière</span></td>
+                        <td>02:00</td>
+                        <td>Conserver 7 jours (AJ.0 → AJ.6)</td>
+                        <td><button class="btn-secondary btn-small" onclick="editSchedule('serveur-A')">✏️ Modifier</button></td>
+                    </tr>
+                    <tr>
+                        <td><strong>serveur-LOGS</strong></td>
+                        <td><span class="badge badge-warning">Hebdomadaire</span></td>
+                        <td>03:00 (lundi)</td>
+                        <td>4 semaines glissantes</td>
+                        <td><button class="btn-secondary btn-small" onclick="editSchedule('serveur-LOGS')">✏️ Modifier</button></td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button class="btn-primary" onclick="addSchedule()">➕ Ajouter une planification</button>
+        </section>
+
+        <section id="gantt" class="section scroll-margin">
+            <h2>📅 Planning visuel</h2>
+            <small>Diagramme de Gantt des sauvegardes planifiées</small>
+
+            <div style="background: white; padding: 10px; border-radius: 12px; margin-top: 20px;">
+                <img src="C:\Users\Nicolas\Desktop\SAE Piloter Projet\SAE Piloter Projet\diagramme_de_Gantt.svg" alt="Diagramme de Gantt" style="width: 100%; height: auto; display: block;">
+            </div>
+        </section>
+<img src="C:\Users\Nicolas\Desktop\SAE Piloter Projet\SAE Piloter Projet\diagramme_de_Gantt.svg" 
+     alt="Diagramme de Gantt"
+     style="
+        width: 100%;
+        transform: scale(1.25);   /* agrandit l’image à 125% */
+        transform-origin: top left;  /* évite un décalage */
+        display: block;
+     ">
+
+        <section id="manual" class="section scroll-margin">
+            <h2>▶️ Sauvegarde ponctuelle</h2>
+            <small>Lancer manuellement une sauvegarde immédiate</small>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Serveur</th>
+                        <th>État actuel</th>
+                        <th>Dernière sauvegarde</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>serveur-A</strong></td>
+                        <td><span class="badge badge-ok">✓ Prêt</span></td>
+                        <td>2025-12-08 02:00</td>
+                        <td><button class="btn-success btn-small" onclick="startBackup('serveur-A')">▶️ Lancer maintenant</button></td>
+                    </tr>
+                    <tr>
+                        <td><strong>serveur-LOGS</strong></td>
+                        <td><span class="badge badge-ko">✗ Erreur</span></td>
+                        <td>2025-12-01 03:15</td>
+                        <td><button class="btn-success btn-small" onclick="startBackup('serveur-LOGS')">▶️ Lancer maintenant</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+        <section id="scan" class="section scroll-margin">
+            <h2>🔍 Scan des archives</h2>
+            <small>Analyse des archives présentes sur le serveur de sauvegarde</small>
+
+            <p style="margin: 20px 0; line-height: 1.6;">
+                Le scan permet de vérifier la cohérence des archives, les dates, les tailles et la présence
+                des sauvegardes attendues. Cette opération peut prendre quelques minutes.
+            </p>
+
+            <div id="scanResults" style="display: none; padding: 20px; background: #f8f9ff; border-radius: 8px; margin: 20px 0;">
+                <h3 style="color: #667eea; margin-bottom: 10px;">Résultats du scan</h3>
+                <p>✓ 9 archives trouvées</p>
+                <p>✓ Toutes les archives sont cohérentes</p>
+                <p>⚠️ 1 archive manquante pour serveur-LOGS</p>
+            </div>
+
+            <button class="btn-primary" onclick="startScan()">🔍 Lancer un scan complet</button>
+            <button class="btn-secondary" onclick="quickScan()">⚡ Scan rapide</button>
+        </section>
+    </main>
+</div>
+
+<div class="notification" id="notification">
+    <strong id="notifTitle">Notification</strong>
+    <p id="notifMessage">Message de notification</p>
+</div>
+
+<div style="max-width: 1600px; margin: 0 auto; padding: 0 20px;">
+    <section id="contact" class="section scroll-margin" style="margin: 20px; background: rgba(255, 255, 255, 0.95);">
+        <h2>📞 Contact</h2>
+        <small>Équipe de développement ShieldBackup</small>
+
+        <div class="contact-grid">
+            <div class="contact-card">
+                <div class="contact-name">Nicolas Tournès</div>
+                <div class="contact-email">nicolas.tournes@etu.univ-cotedazur.fr</div>
+            </div>
+
+            <div class="contact-card">
+                <div class="contact-name">Timéo Car</div>
+                <div class="contact-email">timeo.car@etu.univ-cotedazur.fr</div>
+            </div>
+
+            <div class="contact-card">
+                <div class="contact-name">Abdennour Gdhami</div>
+                <div class="contact-email">abdennour.gdhami@etu.univ-cotedazur.fr</div>
+            </div>
+        </div>
+    </section>
+</div>
+
+<footer>
+    <strong>ShieldBackup</strong> — Système de sauvegarde sécurisé | © 2025 Nicolas Tournès
+</footer>
+
+<script>
+    function updateTime() {
+        document.getElementById('currentTime').textContent = new Date().toLocaleString('fr-FR');
+    }
+    updateTime();
+    setInterval(updateTime, 60000);
+
+    function showNotification(title, message, duration = 3000) {
+        const notif = document.getElementById('notification');
+        document.getElementById('notifTitle').textContent = title;
+        document.getElementById('notifMessage').textContent = message;
+        notif.classList.add('show');
+        setTimeout(() => notif.classList.remove('show'), duration);
+    }
+
+    function refreshData() { showNotification('✓ Actualisation', 'Données actualisées avec succès'); }
+    function viewDetails(server) { showNotification('📋 Détails', `Affichage des détails pour ${server}`); }
+    function saveServer(e) {
+        e.preventDefault();
+        const serverName = document.getElementById('serverName').value;
+        showNotification('✓ Succès', `Serveur ${serverName} enregistré avec succès`);
+        e.target.reset();
+    }
+    function editSchedule(server) { showNotification('✏️ Modification', `Modification de la planification pour ${server}`); }
+    function addSchedule() { showNotification('➕ Ajout', 'Formulaire de nouvelle planification'); }
+    function startBackup(server) { showNotification('▶️ Démarrage', `Sauvegarde lancée pour ${server}`, 4000); }
+    function startScan() {
+        showNotification('🔍 Scan', 'Analyse des archives en cours...', 4000);
+        setTimeout(() => {
+            document.getElementById('scanResults').style.display = 'block';
+            showNotification('✓ Scan terminé', 'Le scan est terminé avec succès');
+        }, 3000);
+    }
+    function quickScan() { showNotification('⚡ Scan rapide', 'Scan rapide en cours...', 2000); }
+
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                window.scrollTo({
+                    top: target.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // Camemberts
+    class PieChart {
+        constructor(canvasId, data, colors, labels) {
+            this.canvas = document.getElementById(canvasId);
+            if (!this.canvas) return;
+            this.ctx = this.canvas.getContext('2d');
+            this.data = data;
+            this.colors = colors;
+            this.labels = labels;
+            this.centerX = this.canvas.width / 2;
+            this.centerY = this.canvas.height / 2;
+            this.radius = 80;
+            this.hoveredSlice = -1;
+            this.animationProgress = 0;
+            this.canvas.style.cursor = 'pointer';
+            this.setupEventListeners();
+            this.animate();
+        }
+
+        setupEventListeners() {
+            this.canvas.addEventListener('mousemove', (e) => {
+                const rect = this.canvas.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                const dx = x - this.centerX;
+                const dy = y - this.centerY;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < this.radius && distance > this.radius * 0.6) {
+                    let angle = Math.atan2(dy, dx);
+                    if (angle < 0) angle += 2 * Math.PI;
+                    angle = (angle + Math.PI / 2) % (2 * Math.PI);
+                    const total = this.data.reduce((sum, val) => sum + val, 0);
+                    let currentAngle = 0;
+                    let newHoveredSlice = -1;
+                    
+                    for (let i = 0; i < this.data.length; i++) {
+                        const sliceAngle = (2 * Math.PI * this.data[i]) / total;
+                        if (angle >= currentAngle && angle < currentAngle + sliceAngle) {
+                            newHoveredSlice = i;
+                            break;
+                        }
+                        currentAngle += sliceAngle;
+                    }
+                    
+                    if (newHoveredSlice !== this.hoveredSlice) {
+                        this.hoveredSlice = newHoveredSlice;
+                        this.draw();
+                    }
+                } else if (this.hoveredSlice !== -1) {
+                    this.hoveredSlice = -1;
+                    this.draw();
+                }
+            });
+
+            this.canvas.addEventListener('mouseleave', () => {
+                if (this.hoveredSlice !== -1) {
+                    this.hoveredSlice = -1;
+                    this.draw();
+                }
+            });
+
+            this.canvas.addEventListener('click', () => {
+                if (this.hoveredSlice !== -1) {
+                    showNotification('📊 Détails', `${this.labels[this.hoveredSlice]}`);
+                }
+            });
+        }
+
+        animate() {
+            if (this.animationProgress < 1) {
+                this.animationProgress += 0.02;
+                this.draw();
+                requestAnimationFrame(() => this.animate());
+            }
+        }
+
+        draw() {
+            this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            const total = this.data.reduce((sum, val) => sum + val, 0);
+            let currentAngle = -Math.PI / 2;
+
+            this.data.forEach((value, index) => {
+                const sliceAngle = (2 * Math.PI * value * this.animationProgress) / total;
+                const isHovered = index === this.hoveredSlice;
+                const radiusToUse = isHovered ? this.radius + 10 : this.radius;
+                
+                let offsetX = 0, offsetY = 0;
+                if (isHovered) {
+                    const midAngle = currentAngle + sliceAngle / 2;
+                    offsetX = Math.cos(midAngle) * 5;
+                    offsetY = Math.sin(midAngle) * 5;
+                }
+                
+                this.ctx.beginPath();
+                this.ctx.arc(
+                    this.centerX + offsetX, 
+                    this.centerY + offsetY, 
+                    radiusToUse, 
+                    currentAngle, 
+                    currentAngle + sliceAngle
+                );
+                this.ctx.lineTo(this.centerX + offsetX, this.centerY + offsetY);
+                this.ctx.fillStyle = this.colors[index];
+                this.ctx.fill();
+                
+                this.ctx.strokeStyle = 'white';
+                this.ctx.lineWidth = 3;
+                this.ctx.stroke();
+
+                if (isHovered) {
+                    this.ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+                    this.ctx.shadowBlur = 10;
+                    this.ctx.shadowOffsetX = 2;
+                    this.ctx.shadowOffsetY = 2;
+                }
+
+                currentAngle += sliceAngle;
+                
+                this.ctx.shadowColor = 'transparent';
+                this.ctx.shadowBlur = 0;
+                this.ctx.shadowOffsetX = 0;
+                this.ctx.shadowOffsetY = 0;
+            });
+
+            this.ctx.beginPath();
+            this.ctx.arc(this.centerX, this.centerY, this.radius * 0.6, 0, 2 * Math.PI);
+            this.ctx.fillStyle = 'white';
+            this.ctx.fill();
+        }
+    }
+
+    new PieChart('statusChart', [1, 1], ['#28a745', '#dc3545'], ['Sauvegardes OK: 1 serveur', 'Erreurs: 1 serveur']);
+    new PieChart('storageChart', [160, 540], ['#667eea', '#e0e0e0'], ['Utilisé: 160 Go', 'Disponible: 540 Go']);
+    new PieChart('memoryChart', [12, 4], ['#ff9800', '#e0e0e0'], ['Mémoire utilisée: 12 Go', 'Mémoire disponible: 4 Go']);
+
+    // Scroll spy
+    const sections = document.querySelectorAll("section");
+    const navLinks = document.querySelectorAll("nav a");
+
+    function updateActiveLink() {
+        const scrollPos = window.scrollY + 250;
+        let current = "";
+        
+        sections.forEach(section => {
+            const top = section.offsetTop;
+            const bottom = top + section.offsetHeight;
+            if (scrollPos >= top && scrollPos < bottom) {
+                current = section.id;
+            }
+        });
+
+        if (window.innerHeight + window.scrollY >= document.body.offsetHeight - 50) {
+            current = sections[sections.length - 1].id;
+        }
+
+        navLinks.forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+        });
+    }
+
+    let scrollTimeout;
+    window.addEventListener("scroll", () => {
+        if (scrollTimeout) clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(updateActiveLink, 50);
+    }, { passive: true });
+
+    updateActiveLink();
+</script>
