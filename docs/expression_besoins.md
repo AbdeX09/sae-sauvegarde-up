@@ -37,7 +37,7 @@ Il n’y a pas d’utilisateur “standard” ni de compte invité : le système
 
 ---
 
-## 4. Description détaillée des besoins fonctionnels
+## 4. Besoins fonctionnels
 
 ### 4.1. Déclaration et paramétrage des serveurs à sauvegarder
 
