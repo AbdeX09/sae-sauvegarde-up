@@ -5,7 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ShieldBackup - Interface d'administration</title>
     <style>
-        * { box-sizing: border-box; margin: 0; padding: 0; }
+        /* Reset & Base */
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -14,9 +19,9 @@
             min-height: 100vh;
         }
 
+        /* Header */
         header {
             background: rgba(102, 126, 234, 0.95);
-            backdrop-filter: blur(10px);
             border-bottom: 1px solid rgba(255, 255, 255, 0.3);
             padding: 10px 30px;
             display: flex;
@@ -61,16 +66,17 @@
             opacity: 0.85;
         }
 
+        /* Layout */
         .layout {
             display: flex;
             max-width: 1600px;
             margin: 0 auto;
         }
 
+        /* Navigation */
         nav {
             width: 280px;
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
             padding: 20px 0;
             margin: 20px;
             border-radius: 15px;
@@ -80,7 +86,9 @@
             top: 120px;
         }
 
-        nav ul { list-style: none; }
+        nav ul { 
+            list-style: none; 
+        }
 
         nav a {
             color: #333;
@@ -89,14 +97,14 @@
             font-weight: 500;
             display: block;
             padding: 12px 30px;
-            transition: all 0.3s ease;
+            transition: transform 0.2s ease, background-color 0.2s ease;
             border-radius: 10px;
             margin: 5px 15px;
         }
 
         nav a.active {
-            color: white !important;
-            background: linear-gradient(135deg, #667eea 0%, #5a67d8 100%);
+            color: white;
+            background: #667eea;
             transform: translateX(5px);
         }
 
@@ -105,6 +113,7 @@
             transform: translateX(3px);
         }
 
+        /* Main Content */
         main {
             flex: 1;
             padding: 0 20px 20px 0;
@@ -117,7 +126,6 @@
 
         .section {
             background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
             padding: 30px;
             margin-bottom: 20px;
             border-radius: 15px;
@@ -131,12 +139,19 @@
             font-weight: 600;
         }
 
+        h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
         small {
             color: #666;
             display: block;
             margin-bottom: 20px;
         }
 
+        /* Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -145,16 +160,18 @@
         }
 
         .stat-card {
-            background: linear-gradient(135deg, #667eea 0%, #5a67d8 100%);
+            background: #667eea;
             color: white;
             padding: 20px;
             border-radius: 12px;
             text-align: center;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
-            transition: transform 0.3s ease;
+            transition: transform 0.2s ease;
         }
 
-        .stat-card:hover { transform: translateY(-5px); }
+        .stat-card:hover { 
+            transform: translateY(-5px); 
+        }
 
         .stat-value {
             font-size: 32px;
@@ -167,6 +184,49 @@
             opacity: 0.9;
         }
 
+        /* Charts Container */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .chart-canvas {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart-legend {
+            margin-top: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            margin-right: 10px;
+        }
+
+        .legend-text {
+            font-size: 14px;
+        }
+
+        /* Tables */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -175,7 +235,7 @@
         }
 
         th {
-            background: linear-gradient(135deg, #667eea 0%, #5a67d8 100%);
+            background: #667eea;
             color: white;
             padding: 12px;
             text-align: left;
@@ -191,6 +251,7 @@
             background: #f8f9ff;
         }
 
+        /* Badges */
         .badge {
             display: inline-block;
             padding: 4px 12px;
@@ -203,6 +264,7 @@
         .badge-ko { background: #f8d7da; color: #721c24; }
         .badge-warning { background: #fff3cd; color: #856404; }
 
+        /* Forms */
         .form-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -227,7 +289,7 @@
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             font-size: 14px;
-            transition: all 0.3s ease;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
         }
 
         input:focus, textarea:focus {
@@ -241,6 +303,7 @@
             resize: vertical;
         }
 
+        /* Buttons */
         button {
             padding: 12px 24px;
             border: none;
@@ -248,13 +311,13 @@
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
             margin-right: 10px;
             margin-top: 10px;
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #5a67d8 100%);
+            background: #667eea;
             color: white;
             box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
         }
@@ -288,6 +351,7 @@
             font-size: 12px;
         }
 
+        /* Progress Bar */
         .progress-bar {
             width: 100%;
             height: 8px;
@@ -299,10 +363,12 @@
 
         .progress-fill {
             height: 100%;
-            background: linear-gradient(90deg, #667eea 0%, #5a67d8 100%);
+            background: #667eea;
             border-radius: 10px;
+            transition: width 0.3s ease;
         }
 
+        /* Notifications */
         .notification {
             position: fixed;
             top: 110px;
@@ -325,6 +391,34 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
+        /* Gantt Container */
+        .gantt-container {
+            background: white;
+            padding: 10px;
+            border-radius: 12px;
+            margin-top: 20px;
+        }
+
+        .gantt-container img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Scan Results */
+        .scan-results {
+            display: none;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .scan-results p {
+            margin: 5px 0;
+        }
+
+        /* Contact Cards */
         .contact-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -333,11 +427,11 @@
         }
 
         .contact-card {
-            background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+            background: rgba(102, 126, 234, 0.05);
             border: 2px solid rgba(102, 126, 234, 0.1);
             border-radius: 12px;
             padding: 20px;
-            transition: all 0.3s ease;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
         .contact-card:hover {
@@ -361,6 +455,7 @@
             content: "✉ ";
         }
 
+        /* Footer */
         footer {
             text-align: center;
             color: white;
@@ -368,13 +463,13 @@
             font-size: 13px;
             opacity: 0.85;
             background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(10px);
         }
 
         .scroll-margin {
             scroll-margin-top: 120px;
         }
 
+        /* Responsive */
         @media (max-width: 768px) {
             header {
                 flex-direction: column;
@@ -397,6 +492,29 @@
             main {
                 margin: 10px;
             }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Performance */
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: 0.01ms !important;
+                animation-iteration-count: 1 !important;
+                transition-duration: 0.01ms !important;
+            }
         }
     </style>
 </head>
@@ -404,7 +522,7 @@
 
 <header>
     <div class="header-left">
-        <img src="C:\Users\Nicolas\Desktop\SAE Piloter Projet\SAE Piloter Projet\img\ShieldBackup.png" class="header-logo" alt="ShieldBackup Logo">
+        <img src="ShieldBackup.png" class="header-logo" alt="ShieldBackup Logo">
         <div class="header-text">
             <h1>ShieldBackup</h1>
             <h2>Interface de système de sauvegarde</h2>
@@ -452,54 +570,54 @@
                 </div>
             </div>
 
-            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin: 30px 0;">
-                <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-                    <h3 style="color: #667eea; margin-bottom: 20px; font-size: 18px;">📈 Répartition des états</h3>
-                    <div style="display: flex; align-items: center; justify-content: center;">
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>📈 Répartition des états</h3>
+                    <div class="chart-canvas">
                         <canvas id="statusChart" width="200" height="200"></canvas>
                     </div>
-                    <div style="margin-top: 20px;">
-                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <div style="width: 16px; height: 16px; background: #28a745; border-radius: 3px; margin-right: 10px;"></div>
-                            <span style="font-size: 14px;">Sauvegardes OK (50%)</span>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #28a745;"></div>
+                            <span class="legend-text">Sauvegardes OK (50%)</span>
                         </div>
-                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <div style="width: 16px; height: 16px; background: #dc3545; border-radius: 3px; margin-right: 10px;"></div>
-                            <span style="font-size: 14px;">Erreurs (50%)</span>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #dc3545;"></div>
+                            <span class="legend-text">Erreurs (50%)</span>
                         </div>
                     </div>
                 </div>
 
-                <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-                    <h3 style="color: #667eea; margin-bottom: 20px; font-size: 18px;">💾 Utilisation de l'espace</h3>
-                    <div style="display: flex; align-items: center; justify-content: center;">
+                <div class="chart-card">
+                    <h3>💾 Utilisation de l'espace</h3>
+                    <div class="chart-canvas">
                         <canvas id="storageChart" width="200" height="200"></canvas>
                     </div>
-                    <div style="margin-top: 20px;">
-                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <div style="width: 16px; height: 16px; background: #667eea; border-radius: 3px; margin-right: 10px;"></div>
-                            <span style="font-size: 14px;">Utilisé: 160 Go (22.8%)</span>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #667eea;"></div>
+                            <span class="legend-text">Utilisé: 160 Go (22.8%)</span>
                         </div>
-                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <div style="width: 16px; height: 16px; background: #e0e0e0; border-radius: 3px; margin-right: 10px;"></div>
-                            <span style="font-size: 14px;">Disponible: 540 Go (77.2%)</span>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #e0e0e0;"></div>
+                            <span class="legend-text">Disponible: 540 Go (77.2%)</span>
                         </div>
                     </div>
                 </div>
 
-                <div style="background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-                    <h3 style="color: #667eea; margin-bottom: 20px; font-size: 18px;">🧠 Utilisation mémoire</h3>
-                    <div style="display: flex; align-items: center; justify-content: center;">
+                <div class="chart-card">
+                    <h3>🧠 Utilisation mémoire</h3>
+                    <div class="chart-canvas">
                         <canvas id="memoryChart" width="200" height="200"></canvas>
                     </div>
-                    <div style="margin-top: 20px;">
-                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <div style="width: 16px; height: 16px; background: #ff9800; border-radius: 3px; margin-right: 10px;"></div>
-                            <span style="font-size: 14px;">Utilisée: 12 Go (75%)</span>
+                    <div class="chart-legend">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #ff9800;"></div>
+                            <span class="legend-text">Utilisée: 12 Go (75%)</span>
                         </div>
-                        <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                            <div style="width: 16px; height: 16px; background: #e0e0e0; border-radius: 3px; margin-right: 10px;"></div>
-                            <span style="font-size: 14px;">Disponible: 4 Go (25%)</span>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background: #e0e0e0;"></div>
+                            <span class="legend-text">Disponible: 4 Go (25%)</span>
                         </div>
                     </div>
                 </div>
@@ -634,18 +752,10 @@
             <h2>📅 Planning visuel</h2>
             <small>Diagramme de Gantt des sauvegardes planifiées</small>
 
-            <div style="background: white; padding: 10px; border-radius: 12px; margin-top: 20px;">
-                <img src="C:\Users\Nicolas\Desktop\SAE Piloter Projet\SAE Piloter Projet\diagramme_de_Gantt.svg" alt="Diagramme de Gantt" style="width: 100%; height: auto; display: block;">
+            <div class="gantt-container">
+                <img src="diagramme_de_Gantt.svg" alt="Diagramme de Gantt">
             </div>
         </section>
-<img src="C:\Users\Nicolas\Desktop\SAE Piloter Projet\SAE Piloter Projet\diagramme_de_Gantt.svg" 
-     alt="Diagramme de Gantt"
-     style="
-        width: 100%;
-        transform: scale(1.25);   /* agrandit l’image à 125% */
-        transform-origin: top left;  /* évite un décalage */
-        display: block;
-     ">
 
         <section id="manual" class="section scroll-margin">
             <h2>▶️ Sauvegarde ponctuelle</h2>
@@ -686,8 +796,8 @@
                 des sauvegardes attendues. Cette opération peut prendre quelques minutes.
             </p>
 
-            <div id="scanResults" style="display: none; padding: 20px; background: #f8f9ff; border-radius: 8px; margin: 20px 0;">
-                <h3 style="color: #667eea; margin-bottom: 10px;">Résultats du scan</h3>
+            <div id="scanResults" class="scan-results">
+                <h3>Résultats du scan</h3>
                 <p>✓ 9 archives trouvées</p>
                 <p>✓ Toutes les archives sont cohérentes</p>
                 <p>⚠️ 1 archive manquante pour serveur-LOGS</p>
@@ -733,12 +843,14 @@
 </footer>
 
 <script>
+    // Update current time
     function updateTime() {
         document.getElementById('currentTime').textContent = new Date().toLocaleString('fr-FR');
     }
     updateTime();
     setInterval(updateTime, 60000);
 
+    // Notification system
     function showNotification(title, message, duration = 3000) {
         const notif = document.getElementById('notification');
         document.getElementById('notifTitle').textContent = title;
@@ -747,17 +859,34 @@
         setTimeout(() => notif.classList.remove('show'), duration);
     }
 
-    function refreshData() { showNotification('✓ Actualisation', 'Données actualisées avec succès'); }
-    function viewDetails(server) { showNotification('📋 Détails', `Affichage des détails pour ${server}`); }
+    // Action handlers
+    function refreshData() { 
+        showNotification('✓ Actualisation', 'Données actualisées avec succès'); 
+    }
+
+    function viewDetails(server) { 
+        showNotification('📋 Détails', `Affichage des détails pour ${server}`); 
+    }
+
     function saveServer(e) {
         e.preventDefault();
         const serverName = document.getElementById('serverName').value;
         showNotification('✓ Succès', `Serveur ${serverName} enregistré avec succès`);
         e.target.reset();
     }
-    function editSchedule(server) { showNotification('✏️ Modification', `Modification de la planification pour ${server}`); }
-    function addSchedule() { showNotification('➕ Ajout', 'Formulaire de nouvelle planification'); }
-    function startBackup(server) { showNotification('▶️ Démarrage', `Sauvegarde lancée pour ${server}`, 4000); }
+
+    function editSchedule(server) { 
+        showNotification('✏️ Modification', `Modification de la planification pour ${server}`); 
+    }
+
+    function addSchedule() { 
+        showNotification('➕ Ajout', 'Formulaire de nouvelle planification'); 
+    }
+
+    function startBackup(server) { 
+        showNotification('▶️ Démarrage', `Sauvegarde lancée pour ${server}`, 4000); 
+    }
+
     function startScan() {
         showNotification('🔍 Scan', 'Analyse des archives en cours...', 4000);
         setTimeout(() => {
@@ -765,8 +894,12 @@
             showNotification('✓ Scan terminé', 'Le scan est terminé avec succès');
         }, 3000);
     }
-    function quickScan() { showNotification('⚡ Scan rapide', 'Scan rapide en cours...', 2000); }
 
+    function quickScan() { 
+        showNotification('⚡ Scan rapide', 'Scan rapide en cours...', 2000); 
+    }
+
+    // Smooth scroll for navigation
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             e.preventDefault();
@@ -780,11 +913,12 @@
         });
     });
 
-    // Camemberts
+    // Pie Chart Class
     class PieChart {
         constructor(canvasId, data, colors, labels) {
             this.canvas = document.getElementById(canvasId);
             if (!this.canvas) return;
+            
             this.ctx = this.canvas.getContext('2d');
             this.data = data;
             this.colors = colors;
@@ -794,6 +928,7 @@
             this.radius = 80;
             this.hoveredSlice = -1;
             this.animationProgress = 0;
+            
             this.canvas.style.cursor = 'pointer';
             this.setupEventListeners();
             this.animate();
@@ -812,6 +947,7 @@
                     let angle = Math.atan2(dy, dx);
                     if (angle < 0) angle += 2 * Math.PI;
                     angle = (angle + Math.PI / 2) % (2 * Math.PI);
+                    
                     const total = this.data.reduce((sum, val) => sum + val, 0);
                     let currentAngle = 0;
                     let newHoveredSlice = -1;
@@ -844,7 +980,7 @@
 
             this.canvas.addEventListener('click', () => {
                 if (this.hoveredSlice !== -1) {
-                    showNotification('📊 Détails', `${this.labels[this.hoveredSlice]}`);
+                    showNotification('📊 Détails', this.labels[this.hoveredSlice]);
                 }
             });
         }
@@ -905,6 +1041,7 @@
                 this.ctx.shadowOffsetY = 0;
             });
 
+            // Draw center hole
             this.ctx.beginPath();
             this.ctx.arc(this.centerX, this.centerY, this.radius * 0.6, 0, 2 * Math.PI);
             this.ctx.fillStyle = 'white';
@@ -912,16 +1049,22 @@
         }
     }
 
-    new PieChart('statusChart', [1, 1], ['#28a745', '#dc3545'], ['Sauvegardes OK: 1 serveur', 'Erreurs: 1 serveur']);
-    new PieChart('storageChart', [160, 540], ['#667eea', '#e0e0e0'], ['Utilisé: 160 Go', 'Disponible: 540 Go']);
-    new PieChart('memoryChart', [12, 4], ['#ff9800', '#e0e0e0'], ['Mémoire utilisée: 12 Go', 'Mémoire disponible: 4 Go']);
+    // Initialize charts
+    new PieChart('statusChart', [1, 1], ['#28a745', '#dc3545'], 
+        ['Sauvegardes OK: 1 serveur', 'Erreurs: 1 serveur']);
+    
+    new PieChart('storageChart', [160, 540], ['#667eea', '#e0e0e0'], 
+        ['Utilisé: 160 Go', 'Disponible: 540 Go']);
+    
+    new PieChart('memoryChart', [12, 4], ['#ff9800', '#e0e0e0'], 
+        ['Mémoire utilisée: 12 Go', 'Mémoire disponible: 4 Go']);
 
-    // Scroll spy
+    // Scroll spy for navigation
     const sections = document.querySelectorAll("section");
     const navLinks = document.querySelectorAll("nav a");
 
     function updateActiveLink() {
-        const scrollPos = window.scrollY + 250;
+        const scrollPos = window.scrollY + window.innerHeight / 3;
         let current = "";
         
         sections.forEach(section => {
@@ -941,11 +1084,12 @@
         });
     }
 
-    let scrollTimeout;
     window.addEventListener("scroll", () => {
-        if (scrollTimeout) clearTimeout(scrollTimeout);
-        scrollTimeout = setTimeout(updateActiveLink, 50);
+        requestAnimationFrame(updateActiveLink);
     }, { passive: true });
 
     updateActiveLink();
 </script>
+
+</body>
+</html>
