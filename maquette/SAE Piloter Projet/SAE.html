@@ -64,6 +64,28 @@
         .header-right {
             font-size: 13px;
             opacity: 0.85;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: white;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
         }
 
         /* Layout */
@@ -263,6 +285,7 @@
         .badge-ok { background: #d4edda; color: #155724; }
         .badge-ko { background: #f8d7da; color: #721c24; }
         .badge-warning { background: #fff3cd; color: #856404; }
+        .badge-info { background: #d1ecf1; color: #0c5460; }
 
         /* Forms */
         .form-grid {
@@ -284,15 +307,16 @@
             margin-bottom: 8px;
         }
 
-        input, textarea {
+        input, textarea, select {
             padding: 12px;
             border: 2px solid #e0e0e0;
             border-radius: 8px;
             font-size: 14px;
             transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            font-family: inherit;
         }
 
-        input:focus, textarea:focus {
+        input:focus, textarea:focus, select:focus {
             outline: none;
             border-color: #667eea;
             box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
@@ -301,6 +325,25 @@
         textarea {
             min-height: 100px;
             resize: vertical;
+        }
+
+        /* Checkbox & Radio */
+        .checkbox-group, .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .checkbox-item, .radio-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        input[type="checkbox"], input[type="radio"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
         }
 
         /* Buttons */
@@ -346,6 +389,15 @@
             background: #218838;
         }
 
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
         .btn-small {
             padding: 8px 16px;
             font-size: 12px;
@@ -379,6 +431,7 @@
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
             display: none;
             z-index: 2000;
+            min-width: 300px;
         }
 
         .notification.show {
@@ -391,18 +444,60 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
-        /* Gantt Container */
-        .gantt-container {
-            background: white;
-            padding: 10px;
-            border-radius: 12px;
-            margin-top: 20px;
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
         }
 
-        .gantt-container img {
-            width: 100%;
-            height: auto;
-            display: block;
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #666;
+            padding: 0;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.2s;
+        }
+
+        .modal-close:hover {
+            background: #f0f0f0;
         }
 
         /* Scan Results */
@@ -455,6 +550,122 @@
             content: "✉ ";
         }
 
+        /* Archive List */
+        .archive-list {
+            display: grid;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .archive-item {
+            background: #f8f9ff;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #667eea;
+        }
+
+        .archive-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .archive-name {
+            font-weight: 600;
+            color: #667eea;
+        }
+
+        .archive-details {
+            font-size: 13px;
+            color: #666;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 10px;
+        }
+
+        /* Log Viewer */
+        .log-viewer {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            max-height: 400px;
+            overflow-y: auto;
+            margin: 20px 0;
+        }
+
+        .log-line {
+            margin: 5px 0;
+            line-height: 1.5;
+        }
+
+        .log-error {
+            color: #f48771;
+        }
+
+        .log-success {
+            color: #89d185;
+        }
+
+        .log-warning {
+            color: #dcdcaa;
+        }
+
+        .log-info {
+            color: #569cd6;
+        }
+
+        /* Week Days Selector */
+        .weekdays-selector {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .weekday-btn {
+            padding: 10px 15px;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .weekday-btn.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .weekday-btn:hover {
+            border-color: #667eea;
+        }
+
+        /* SSH Key Upload */
+        .ssh-key-upload {
+            border: 2px dashed #e0e0e0;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ssh-key-upload:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .ssh-key-upload.has-file {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
         /* Footer */
         footer {
             text-align: center;
@@ -467,6 +678,35 @@
 
         .scroll-margin {
             scroll-margin-top: 120px;
+        }
+
+        /* Login Page */
+        .login-container {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-box {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .login-logo h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 10px;
         }
 
         /* Responsive */
@@ -504,6 +744,10 @@
             .charts-grid {
                 grid-template-columns: 1fr;
             }
+
+            .weekdays-selector {
+                justify-content: center;
+            }
         }
 
         /* Performance */
@@ -516,20 +760,54 @@
                 transition-duration: 0.01ms !important;
             }
         }
+
+        /* Hidden class */
+        .hidden {
+            display: none !important;
+        }
     </style>
 </head>
 <body>
 
+<!-- Login Page (initially hidden) -->
+<div id="loginPage" class="login-container hidden">
+    <div class="login-box">
+        <div class="login-logo">
+            <h1>🛡️ ShieldBackup</h1>
+            <p style="color: #666;">Connexion à l'interface d'administration</p>
+        </div>
+        <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label>Nom d'utilisateur</label>
+                <input type="text" id="loginUsername" placeholder="admin" required>
+            </div>
+            <div class="form-group">
+                <label>Mot de passe</label>
+                <input type="password" id="loginPassword" placeholder="••••••••" required>
+            </div>
+            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 20px;">
+                🔐 Se connecter
+            </button>
+        </form>
+    </div>
+</div>
+
+<!-- Main Application (initially visible) -->
+<div id="mainApp">
 <header>
     <div class="header-left">
-        <img src="ShieldBackup.png" class="header-logo" alt="ShieldBackup Logo">
+        <img src="ShieldBackup.png" class="header-logo" alt="ShieldBackup Logo" onerror="this.style.display='none'">
         <div class="header-text">
             <h1 style="color: white;">ShieldBackup</h1>
             <h2 style="color: white;">Interface de système de sauvegarde</h2>
         </div>
     </div>
     <div class="header-right" style="color: white;">
-        Dernière mise à jour : <span id="currentTime"></span>
+        <div class="user-info">
+            <span>Administrateur</span>
+            <div class="user-avatar">A</div>
+        </div>
+        <div>Dernière mise à jour : <span id="currentTime"></span></div>
     </div>
 </header>
 
@@ -541,6 +819,7 @@
             <li><a href="#planning">⏰ Planification</a></li>
             <li><a href="#manual">▶️ Sauvegarde ponctuelle</a></li>
             <li><a href="#scan">🔍 Scan des archives</a></li>
+            <li><a href="#logs">📜 Historique & Logs</a></li>
             <li><a href="#contact">📞 Contact</a></li>
         </ul>
     </nav>
@@ -646,7 +925,7 @@
                             </div>
                         </td>
                         <td>
-                            <button class="btn-primary btn-small" onclick="viewDetails('serveur-A')">Détails</button>
+                            <button class="btn-primary btn-small" onclick="viewDetails('serveur-A')">📋 Détails</button>
                         </td>
                     </tr>
                     <tr>
@@ -661,7 +940,7 @@
                             </div>
                         </td>
                         <td>
-                            <button class="btn-primary btn-small" onclick="viewDetails('serveur-LOGS')">Détails</button>
+                            <button class="btn-primary btn-small" onclick="viewDetails('serveur-LOGS')">📋 Détails</button>
                         </td>
                     </tr>
                 </tbody>
@@ -675,6 +954,7 @@
             <small>Configuration des serveurs à sauvegarder</small>
 
             <form onsubmit="saveServer(event)">
+                <h3>Informations générales</h3>
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Nom du serveur *</label>
@@ -686,11 +966,34 @@
                     </div>
                 </div>
 
+                <h3 style="margin-top: 30px;">Configuration SSH</h3>
                 <div class="form-grid">
                     <div class="form-group">
                         <label>Port SSH</label>
                         <input type="number" id="sshPort" value="22">
                     </div>
+                    <div class="form-group">
+                        <label>Utilisateur SSH *</label>
+                        <input type="text" id="sshUser" placeholder="root" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Clé publique SSH</label>
+                    <div class="ssh-key-upload" id="sshKeyUpload" onclick="document.getElementById('sshKeyFile').click()">
+                        <p>📄 Cliquez pour sélectionner votre clé publique (.pub)</p>
+                        <p style="font-size: 12px; color: #666; margin-top: 10px;">ou collez le contenu ci-dessous</p>
+                    </div>
+                    <input type="file" id="sshKeyFile" accept=".pub" style="display: none;" onchange="handleSSHKeyUpload(event)">
+                    <textarea id="sshKeyContent" placeholder="ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAAB..." style="margin-top: 10px;"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <button type="button" class="btn-secondary btn-small" onclick="testSSHConnection()">🔌 Tester la connexion SSH</button>
+                </div>
+
+                <h3 style="margin-top: 30px;">Sauvegarde</h3>
+                <div class="form-grid">
                     <div class="form-group">
                         <label>Répertoire de destination</label>
                         <input type="text" id="destDir" placeholder="/archives/serveur-A">
@@ -703,7 +1006,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Services à arrêter pendant la sauvegarde</label>
+                    <label>Services à arrêter pendant la sauvegarde (optionnel)</label>
                     <textarea id="services" placeholder="apache2&#10;mysql&#10;redis"></textarea>
                 </div>
 
@@ -732,21 +1035,26 @@
                         <td><span class="badge badge-ok">Journalière</span></td>
                         <td>02:00</td>
                         <td>Conserver 7 jours (AJ.0 → AJ.6)</td>
-                        <td><button class="btn-secondary btn-small" onclick="editSchedule('serveur-A')">✏️ Modifier</button></td>
+                        <td>
+                            <button class="btn-secondary btn-small" onclick="editSchedule('serveur-A')">✏️ Modifier</button>
+                            <button class="btn-danger btn-small" onclick="deleteSchedule('serveur-A')">🗑️ Supprimer</button>
+                        </td>
                     </tr>
                     <tr>
                         <td><strong>serveur-LOGS</strong></td>
                         <td><span class="badge badge-warning">Hebdomadaire</span></td>
                         <td>03:00 (lundi)</td>
                         <td>4 semaines glissantes</td>
-                        <td><button class="btn-secondary btn-small" onclick="editSchedule('serveur-LOGS')">✏️ Modifier</button></td>
+                        <td>
+                            <button class="btn-secondary btn-small" onclick="editSchedule('serveur-LOGS')">✏️ Modifier</button>
+                            <button class="btn-danger btn-small" onclick="deleteSchedule('serveur-LOGS')">🗑️ Supprimer</button>
+                        </td>
                     </tr>
                 </tbody>
             </table>
 
             <button class="btn-primary" onclick="addSchedule()">➕ Ajouter une planification</button>
         </section>
-
 
         <section id="manual" class="section scroll-margin">
             <h2>▶️ Sauvegarde ponctuelle</h2>
@@ -797,12 +1105,50 @@
             <button class="btn-primary" onclick="startScan()">🔍 Lancer un scan complet</button>
             <button class="btn-secondary" onclick="quickScan()">⚡ Scan rapide</button>
         </section>
-    </main>
-</div>
 
-<div class="notification" id="notification">
-    <strong id="notifTitle">Notification</strong>
-    <p id="notifMessage">Message de notification</p>
+        <section id="logs" class="section scroll-margin">
+            <h2>📜 Historique & Logs</h2>
+            <small>Consultation des logs de sauvegarde et de l'historique</small>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Filtrer par serveur</label>
+                    <select id="logServerFilter" onchange="filterLogs()">
+                        <option value="all">Tous les serveurs</option>
+                        <option value="serveur-A">serveur-A</option>
+                        <option value="serveur-LOGS">serveur-LOGS</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Filtrer par type</label>
+                    <select id="logTypeFilter" onchange="filterLogs()">
+                        <option value="all">Tous les types</option>
+                        <option value="success">Succès</option>
+                        <option value="error">Erreurs</option>
+                        <option value="warning">Avertissements</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="log-viewer">
+                <div class="log-line log-info">[2025-12-08 02:00:15] INFO - Démarrage de la sauvegarde pour serveur-A</div>
+                <div class="log-line log-success">[2025-12-08 02:00:18] SUCCESS - Connexion SSH établie avec serveur-A (192.168.10.15)</div>
+                <div class="log-line log-info">[2025-12-08 02:00:20] INFO - Arrêt des services: apache2, mysql</div>
+                <div class="log-line log-success">[2025-12-08 02:00:25] SUCCESS - Services arrêtés avec succès</div>
+                <div class="log-line log-info">[2025-12-08 02:00:30] INFO - Compression des répertoires: /var/log, /etc, /home/app/data</div>
+                <div class="log-line log-success">[2025-12-08 02:05:42] SUCCESS - Archive créée: AJ.0 (17.2 Go)</div>
+                <div class="log-line log-success">[2025-12-08 02:05:45] SUCCESS - Rotation des archives effectuée (AJ.0 → AJ.6)</div>
+                <div class="log-line log-success">[2025-12-08 02:05:48] SUCCESS - Redémarrage des services terminé</div>
+                <div class="log-line log-success">[2025-12-08 02:05:50] SUCCESS - Sauvegarde terminée avec succès</div>
+                <div class="log-line log-info">[2025-12-01 03:15:10] INFO - Démarrage de la sauvegarde pour serveur-LOGS</div>
+                <div class="log-line log-error">[2025-12-01 03:15:15] ERROR - Impossible de se connecter à serveur-LOGS: Connection timeout</div>
+                <div class="log-line log-error">[2025-12-01 03:15:15] ERROR - Sauvegarde échouée pour serveur-LOGS</div>
+            </div>
+
+            <button class="btn-secondary" onclick="exportLogs()">💾 Exporter les logs</button>
+            <button class="btn-secondary" onclick="clearLogs()">🗑️ Effacer les logs anciens</button>
+        </section>
+    </main>
 </div>
 
 <div style="max-width: 1600px; margin: 0 auto; padding: 0 20px;">
@@ -832,6 +1178,124 @@
 <footer>
     <strong>ShieldBackup</strong> — Système de sauvegarde sécurisé | © 2025 Nicolas Tournès
 </footer>
+</div>
+
+<!-- Modal: Server Details -->
+<div id="serverDetailsModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2>📋 Détails du serveur: <span id="modalServerName"></span></h2>
+            <button class="modal-close" onclick="closeModal('serverDetailsModal')">&times;</button>
+        </div>
+        
+        <h3>Informations générales</h3>
+        <p><strong>IP:</strong> <span id="modalServerIP"></span></p>
+        <p><strong>Dernière sauvegarde:</strong> <span id="modalLastBackup"></span></p>
+        <p><strong>État:</strong> <span id="modalServerStatus"></span></p>
+
+        <h3 style="margin-top: 20px;">Archives disponibles</h3>
+        <div class="archive-list" id="modalArchiveList">
+            <!-- Archives will be inserted here -->
+        </div>
+
+        <h3 style="margin-top: 20px;">Évolution de l'espace</h3>
+        <div class="chart-card">
+            <canvas id="serverStorageChart" width="400" height="200"></canvas>
+        </div>
+
+        <button class="btn-secondary" onclick="closeModal('serverDetailsModal')">Fermer</button>
+    </div>
+</div>
+
+<!-- Modal: Add/Edit Schedule -->
+<div id="scheduleModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h2 id="scheduleModalTitle">➕ Nouvelle planification</h2>
+            <button class="modal-close" onclick="closeModal('scheduleModal')">&times;</button>
+        </div>
+
+        <form onsubmit="saveSchedule(event)">
+            <div class="form-group">
+                <label>Serveur</label>
+                <select id="scheduleServer" required>
+                    <option value="">Sélectionner un serveur</option>
+                    <option value="serveur-A">serveur-A</option>
+                    <option value="serveur-LOGS">serveur-LOGS</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label>Type de fréquence *</label>
+                <select id="scheduleFrequency" onchange="updateFrequencyOptions()" required>
+                    <option value="">Sélectionner une fréquence</option>
+                    <option value="daily">Quotidienne</option>
+                    <option value="weekly">Hebdomadaire</option>
+                    <option value="monthly">Mensuelle</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="weekdaysGroup" style="display: none;">
+                <label>Jours de la semaine</label>
+                <div class="weekdays-selector">
+                    <button type="button" class="weekday-btn" data-day="1" onclick="toggleWeekday(this)">Lun</button>
+                    <button type="button" class="weekday-btn" data-day="2" onclick="toggleWeekday(this)">Mar</button>
+                    <button type="button" class="weekday-btn" data-day="3" onclick="toggleWeekday(this)">Mer</button>
+                    <button type="button" class="weekday-btn" data-day="4" onclick="toggleWeekday(this)">Jeu</button>
+                    <button type="button" class="weekday-btn" data-day="5" onclick="toggleWeekday(this)">Ven</button>
+                    <button type="button" class="weekday-btn" data-day="6" onclick="toggleWeekday(this)">Sam</button>
+                    <button type="button" class="weekday-btn" data-day="0" onclick="toggleWeekday(this)">Dim</button>
+                </div>
+            </div>
+
+            <div class="form-group" id="monthdayGroup" style="display: none;">
+                <label>Jour du mois</label>
+                <input type="number" id="scheduleMonthDay" min="1" max="31" placeholder="1-31">
+            </div>
+
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Heure d'exécution *</label>
+                    <input type="time" id="scheduleTime" value="02:00" required>
+                </div>
+            </div>
+
+            <h3 style="margin-top: 20px;">Politique de rétention</h3>
+            
+            <div class="form-group">
+                <label>Type de rotation *</label>
+                <select id="retentionType" onchange="updateRetentionOptions()" required>
+                    <option value="">Sélectionner un type</option>
+                    <option value="days">Rotation journalière (AJ.0 → AJ.N)</option>
+                    <option value="weeks">Rotation hebdomadaire (SEM.0 → SEM.N)</option>
+                    <option value="months">Rotation mensuelle (MOIS.0 → MOIS.N)</option>
+                    <option value="custom">Personnalisé</option>
+                </select>
+            </div>
+
+            <div class="form-group" id="retentionCountGroup" style="display: none;">
+                <label>Nombre d'archives à conserver *</label>
+                <input type="number" id="retentionCount" min="1" max="365" placeholder="Ex: 7 pour 7 jours">
+                <small style="margin-top: 5px;">
+                    La nouvelle archive devient AJ.0 (ou SEM.0, MOIS.0), les anciennes sont décalées et la plus vieille est supprimée.
+                </small>
+            </div>
+
+            <div class="form-group">
+                <label>Préfixe des archives</label>
+                <input type="text" id="archivePrefix" placeholder="Ex: AJ, SEM, BACKUP" value="AJ">
+            </div>
+
+            <button type="submit" class="btn-primary">💾 Enregistrer la planification</button>
+            <button type="button" class="btn-secondary" onclick="closeModal('scheduleModal')">Annuler</button>
+        </form>
+    </div>
+</div>
+
+<div class="notification" id="notification">
+    <strong id="notifTitle">Notification</strong>
+    <p id="notifMessage">Message de notification</p>
+</div>
 
 <script>
     // Update current time
@@ -840,6 +1304,20 @@
     }
     updateTime();
     setInterval(updateTime, 60000);
+
+    // Login handling
+    function handleLogin(e) {
+        e.preventDefault();
+        const username = document.getElementById('loginUsername').value;
+        const password = document.getElementById('loginPassword').value;
+        
+        // Simple demo authentication
+        if (username && password) {
+            document.getElementById('loginPage').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            showNotification('✓ Connexion réussie', `Bienvenue ${username}`);
+        }
+    }
 
     // Notification system
     function showNotification(title, message, duration = 3000) {
@@ -850,13 +1328,204 @@
         setTimeout(() => notif.classList.remove('show'), duration);
     }
 
+    // Modal management
+    function openModal(modalId) {
+        document.getElementById(modalId).classList.add('show');
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).classList.remove('show');
+    }
+
+    // Server details modal
+    function viewDetails(serverName) {
+        document.getElementById('modalServerName').textContent = serverName;
+        
+        // Sample data based on server
+        if (serverName === 'serveur-A') {
+            document.getElementById('modalServerIP').textContent = '192.168.10.15';
+            document.getElementById('modalLastBackup').textContent = '2025-12-08 02:00';
+            document.getElementById('modalServerStatus').innerHTML = '<span class="badge badge-ok">✓ OK</span>';
+            
+            // Archives
+            const archiveList = document.getElementById('modalArchiveList');
+            archiveList.innerHTML = `
+                <div class="archive-item">
+                    <div class="archive-item-header">
+                        <span class="archive-name">AJ.0</span>
+                        <span class="badge badge-ok">✓ OK</span>
+                    </div>
+                    <div class="archive-details">
+                        <div>📅 Date: 2025-12-08 02:00</div>
+                        <div>💾 Taille: 17.2 Go</div>
+                        <div>🔒 Checksum: a3f2e9...</div>
+                    </div>
+                </div>
+                <div class="archive-item">
+                    <div class="archive-item-header">
+                        <span class="archive-name">AJ.1</span>
+                        <span class="badge badge-ok">✓ OK</span>
+                    </div>
+                    <div class="archive-details">
+                        <div>📅 Date: 2025-12-07 02:00</div>
+                        <div>💾 Taille: 17.1 Go</div>
+                        <div>🔒 Checksum: b7c4d1...</div>
+                    </div>
+                </div>
+                <div class="archive-item">
+                    <div class="archive-item-header">
+                        <span class="archive-name">AJ.2</span>
+                        <span class="badge badge-ok">✓ OK</span>
+                    </div>
+                    <div class="archive-details">
+                        <div>📅 Date: 2025-12-06 02:00</div>
+                        <div>💾 Taille: 17.0 Go</div>
+                        <div>🔒 Checksum: c8e5f3...</div>
+                    </div>
+                </div>
+            `;
+        } else {
+            document.getElementById('modalServerIP').textContent = '192.168.10.20';
+            document.getElementById('modalLastBackup').textContent = '2025-12-01 03:15';
+            document.getElementById('modalServerStatus').innerHTML = '<span class="badge badge-ko">✗ ERREUR</span>';
+            
+            const archiveList = document.getElementById('modalArchiveList');
+            archiveList.innerHTML = `
+                <div class="archive-item">
+                    <div class="archive-item-header">
+                        <span class="archive-name">AJ.0</span>
+                        <span class="badge badge-ok">✓ OK</span>
+                    </div>
+                    <div class="archive-details">
+                        <div>📅 Date: 2025-12-01 03:15</div>
+                        <div>💾 Taille: 20.5 Go</div>
+                        <div>🔒 Checksum: d9f6a2...</div>
+                    </div>
+                </div>
+                <div class="archive-item">
+                    <div class="archive-item-header">
+                        <span class="archive-name">AJ.1</span>
+                        <span class="badge badge-ok">✓ OK</span>
+                    </div>
+                    <div class="archive-details">
+                        <div>📅 Date: 2025-11-24 03:15</div>
+                        <div>💾 Taille: 19.8 Go</div>
+                        <div>🔒 Checksum: e1a7b3...</div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        openModal('serverDetailsModal');
+    }
+
+    // Schedule management
+    function addSchedule() {
+        document.getElementById('scheduleModalTitle').textContent = '➕ Nouvelle planification';
+        document.querySelector('#scheduleModal form').reset();
+        openModal('scheduleModal');
+    }
+
+    function editSchedule(serverName) {
+        document.getElementById('scheduleModalTitle').textContent = `✏️ Modifier la planification - ${serverName}`;
+        document.getElementById('scheduleServer').value = serverName;
+        
+        // Pre-fill with existing data
+        if (serverName === 'serveur-A') {
+            document.getElementById('scheduleFrequency').value = 'daily';
+            document.getElementById('scheduleTime').value = '02:00';
+            document.getElementById('retentionType').value = 'days';
+            document.getElementById('retentionCount').value = '7';
+            updateFrequencyOptions();
+            updateRetentionOptions();
+        } else {
+            document.getElementById('scheduleFrequency').value = 'weekly';
+            document.getElementById('scheduleTime').value = '03:00';
+            document.getElementById('retentionType').value = 'weeks';
+            document.getElementById('retentionCount').value = '4';
+            updateFrequencyOptions();
+            updateRetentionOptions();
+        }
+        
+        openModal('scheduleModal');
+    }
+
+    function deleteSchedule(serverName) {
+        if (confirm(`Êtes-vous sûr de vouloir supprimer la planification pour ${serverName} ?`)) {
+            showNotification('🗑️ Suppression', `Planification supprimée pour ${serverName}`);
+        }
+    }
+
+    function saveSchedule(e) {
+        e.preventDefault();
+        const serverName = document.getElementById('scheduleServer').value;
+        showNotification('✓ Succès', `Planification enregistrée pour ${serverName}`);
+        closeModal('scheduleModal');
+    }
+
+    function updateFrequencyOptions() {
+        const frequency = document.getElementById('scheduleFrequency').value;
+        const weekdaysGroup = document.getElementById('weekdaysGroup');
+        const monthdayGroup = document.getElementById('monthdayGroup');
+        
+        weekdaysGroup.style.display = frequency === 'weekly' ? 'flex' : 'none';
+        monthdayGroup.style.display = frequency === 'monthly' ? 'flex' : 'none';
+    }
+
+    function updateRetentionOptions() {
+        const retentionType = document.getElementById('retentionType').value;
+        const retentionCountGroup = document.getElementById('retentionCountGroup');
+        
+        retentionCountGroup.style.display = retentionType ? 'flex' : 'none';
+        
+        // Update placeholder based on type
+        const input = document.getElementById('retentionCount');
+        if (retentionType === 'days') {
+            input.placeholder = 'Ex: 7 pour conserver 7 jours';
+        } else if (retentionType === 'weeks') {
+            input.placeholder = 'Ex: 4 pour conserver 4 semaines';
+        } else if (retentionType === 'months') {
+            input.placeholder = 'Ex: 12 pour conserver 12 mois';
+        }
+    }
+
+    function toggleWeekday(btn) {
+        btn.classList.toggle('selected');
+    }
+
+    // SSH Key upload
+    function handleSSHKeyUpload(event) {
+        const file = event.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                document.getElementById('sshKeyContent').value = e.target.result;
+                document.getElementById('sshKeyUpload').classList.add('has-file');
+                document.getElementById('sshKeyUpload').innerHTML = `<p>✓ Fichier chargé: ${file.name}</p>`;
+            };
+            reader.readAsText(file);
+        }
+    }
+
+    function testSSHConnection() {
+        const ip = document.getElementById('serverIP').value;
+        const port = document.getElementById('sshPort').value;
+        const user = document.getElementById('sshUser').value;
+        
+        if (!ip || !user) {
+            showNotification('⚠️ Erreur', 'Veuillez remplir l\'adresse IP et l\'utilisateur SSH');
+            return;
+        }
+        
+        showNotification('🔌 Test en cours', 'Connexion SSH en cours...', 2000);
+        setTimeout(() => {
+            showNotification('✓ Succès', `Connexion SSH établie avec ${user}@${ip}:${port}`);
+        }, 2000);
+    }
+
     // Action handlers
     function refreshData() { 
         showNotification('✓ Actualisation', 'Données actualisées avec succès'); 
-    }
-
-    function viewDetails(server) { 
-        showNotification('📋 Détails', `Affichage des détails pour ${server}`); 
     }
 
     function saveServer(e) {
@@ -864,14 +1533,6 @@
         const serverName = document.getElementById('serverName').value;
         showNotification('✓ Succès', `Serveur ${serverName} enregistré avec succès`);
         e.target.reset();
-    }
-
-    function editSchedule(server) { 
-        showNotification('✏️ Modification', `Modification de la planification pour ${server}`); 
-    }
-
-    function addSchedule() { 
-        showNotification('➕ Ajout', 'Formulaire de nouvelle planification'); 
     }
 
     function startBackup(server) { 
@@ -888,6 +1549,20 @@
 
     function quickScan() { 
         showNotification('⚡ Scan rapide', 'Scan rapide en cours...', 2000); 
+    }
+
+    function filterLogs() {
+        showNotification('🔍 Filtrage', 'Logs filtrés selon vos critères');
+    }
+
+    function exportLogs() {
+        showNotification('💾 Export', 'Logs exportés en fichier texte');
+    }
+
+    function clearLogs() {
+        if (confirm('Voulez-vous vraiment effacer les anciens logs ?')) {
+            showNotification('🗑️ Suppression', 'Logs anciens supprimés');
+        }
     }
 
     // Smooth scroll for navigation
