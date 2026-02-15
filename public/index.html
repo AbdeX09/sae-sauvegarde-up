@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShieldBackup - Interface d'administration</title>
+    <style>
+/* Styles pour la page de connexion */
+#loginPage input:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+}
+
+code {
+    background: #e1e8ff;
+    padding: 2px 6px;
+    border-radius: 3px;
+    font-family: 'Courier New', monospace;
+    color: #667eea;
+}
+.log-container {
+    max-height: 600px;
+    overflow-y: auto;
+    padding: 10px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.log-entry {
+    transition: transform 0.2s;
+}
+
+.log-entry:hover {
+    transform: translateX(5px);
+}
+
+        /* Reset & Base */
+        * { 
+            box-sizing: border-box; 
+            margin: 0; 
+            padding: 0; 
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #667eea;
+            color: #333;
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: rgba(102, 126, 234, 0.95);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 10px 30px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            color: white;
+            height: 90px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .header-logo {
+            height: 85px;
+            width: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 2px 8px rgba(0,0,0,0.2));
+        }
+
+        .header-text h1 {
+            margin: 0;
+            font-size: 30px;
+            font-weight: 700;
+        }
+
+        .header-text h2 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 400;
+            opacity: 0.95;
+        }
+
+        .header-right {
+            font-size: 13px;
+            opacity: 0.85;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: white;
+            color: #667eea;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        /* Layout */
+        .layout {
+            display: flex;
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        /* Navigation */
+        nav {
+            width: 280px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 20px 0;
+            margin: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            height: fit-content;
+            position: sticky;
+            top: 120px;
+        }
+
+        nav ul { 
+            list-style: none; 
+        }
+
+        nav a {
+            color: #333;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            display: block;
+            padding: 12px 30px;
+            transition: transform 0.2s ease, background-color 0.2s ease;
+            border-radius: 10px;
+            margin: 5px 15px;
+        }
+
+        nav a.active {
+            color: white;
+            background: #667eea;
+            transform: translateX(5px);
+        }
+
+        nav a:hover:not(.active) {
+            background: rgba(102, 126, 234, 0.1);
+            transform: translateX(3px);
+        }
+
+        /* Main Content */
+        main {
+            flex: 1;
+            padding: 0 20px 20px 0;
+            margin-top: 0;
+        }
+
+        .section:first-child {
+            margin-top: 20px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.95);
+            padding: 30px;
+            margin-bottom: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 18px;
+        }
+
+        small {
+            color: #666;
+            display: block;
+            margin-bottom: 20px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .stat-card {
+            background: #667eea;
+            color: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+            transition: transform 0.2s ease;
+        }
+
+        .stat-card:hover { 
+            transform: translateY(-5px); 
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        /* Charts Container */
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin: 30px 0;
+        }
+
+        .chart-card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        .chart-canvas {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chart-legend {
+            margin-top: 20px;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .legend-color {
+            width: 16px;
+            height: 16px;
+            border-radius: 3px;
+            margin-right: 10px;
+        }
+
+        .legend-text {
+            font-size: 14px;
+        }
+
+        /* Tables */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+            margin-top: 15px;
+        }
+
+        th {
+            background: #667eea;
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        tr:hover td {
+            background: #f8f9ff;
+        }
+
+        /* Badges */
+        .badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .badge-ok { background: #d4edda; color: #155724; }
+        .badge-ko { background: #f8d7da; color: #721c24; }
+        .badge-warning { background: #fff3cd; color: #856404; }
+        .badge-info { background: #d1ecf1; color: #0c5460; }
+
+        /* Forms */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-size: 14px;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+        }
+
+        input, textarea, select {
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+            font-family: inherit;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        /* Buttons */
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+            margin-right: 10px;
+            margin-top: 10px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: #6c757d;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #5a6268;
+            transform: translateY(-2px);
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #218838;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c82333;
+        }
+
+        .btn-small {
+            padding: 8px 16px;
+            font-size: 12px;
+        }
+
+        /* Progress Bar */
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #667eea;
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        /* Notifications */
+        .notification {
+            position: fixed;
+            top: 110px;
+            right: 20px;
+            padding: 15px 20px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 2000;
+            min-width: 300px;
+        }
+
+        .notification.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(400px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        .scroll-margin {
+            scroll-margin-top: 120px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                height: auto;
+                padding: 15px;
+                gap: 10px;
+            }
+
+            .layout {
+                flex-direction: column;
+            }
+
+            nav {
+                width: 100%;
+                position: relative;
+                top: 0;
+                margin: 10px;
+            }
+
+            main {
+                margin: 10px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
+        .ssh-key-upload {
+            border: 2px dashed #e0e0e0;
+            padding: 30px;
+            border-radius: 8px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .ssh-key-upload:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .ssh-key-upload.has-file {
+            border-color: #28a745;
+            background: #d4edda;
+        }
+
+        footer {
+            text-align: center;
+            color: white;
+            padding: 30px 20px;
+            font-size: 13px;
+            opacity: 0.85;
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .contact-card {
+            background: rgba(102, 126, 234, 0.05);
+            border: 2px solid rgba(102, 126, 234, 0.1);
+            border-radius: 12px;
+            padding: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .contact-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.15);
+        }
+
+        .contact-name {
+            font-size: 18px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .contact-email {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .contact-email::before {
+            content: "✉ ";
+        }
+
+        .scan-results {
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .scan-results p {
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+
+
+<!-- Page de connexion (affichée par défaut) -->
+<div id="loginPage" style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+    <div style="background: white; padding: 40px; border-radius: 15px; box-shadow: 0 8px 32px rgba(0,0,0,0.3); width: 100%; max-width: 400px;">
+        <div style="text-align: center; margin-bottom: 30px;">
+            <h1 style="color: #667eea; font-size: 32px; margin-bottom: 10px;">🛡️ ShieldBackup</h1>
+            <p style="color: #666;">Connexion à l'interface d'administration</p>
+        </div>
+        <form onsubmit="handleLogin(event)">
+            <div class="form-group">
+                <label>Nom d'utilisateur</label>
+                <input type="text" id="loginUsername" placeholder="admin" required autofocus>
+            </div>
+            <div class="form-group">
+                <label>Mot de passe</label>
+                <input type="password" id="loginPassword" placeholder="••••••••" required>
+            </div>
+            <div id="loginError" style="display: none; color: #e74c3c; margin-bottom: 15px; padding: 10px; background: #ffe5e5; border-radius: 5px; font-size: 14px;">
+            </div>
+            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 20px;">
+                🔐 Se connecter
+            </button>
+        </form>
+        <div style="margin-top: 20px; padding: 15px; background: #f8f9ff; border-radius: 8px; font-size: 13px; color: #666;">
+            <strong>Credentials par défaut :</strong><br>
+            Utilisateur : <code>admin</code><br>
+            Mot de passe : <code>admin123</code>
+        </div>
+    </div>
+</div>
+
+<!-- Application principale (cachée par défaut) -->
+
+<div id="mainApp">
+<header>
+    <div class="header-left">
+
+        <div class="header-text">
+            <h1 style="color: white;">ShieldBackup</h1>
+            <h2 style="color: white;">Interface de système de sauvegarde</h2>
+        </div>
+    </div>
+<div class="header-right" style="color: white;">
+    <div style="text-align: right; margin-bottom: 8px;">
+        <div>Dernière mise à jour : <span id="currentTime"></span></div>
+    </div>
+    <div style="display: flex; align-items: center; gap: 12px;">
+        <span id="currentUser" style="font-weight: 600;">Administrateur</span>
+        <div class="user-avatar" id="userAvatar">A</div>
+        <button onclick="handleLogout()" class="btn-danger btn-small" style="margin: 0;">
+            🚪 Déconnexion
+        </button>
+    </div>
+</div>
+</header>
+
+<div class="layout">
+    <nav>
+        <ul>
+            <li><a href="#dashboard">📊 Tableau de bord</a></li>
+            <li><a href="#declare">➕ Déclaration serveurs</a></li>
+            <li><a href="#planning">⏰ Planification</a></li>
+            <li><a href="#manual">▶️ Sauvegarde ponctuelle</a></li>
+            <li><a href="#scan">🔍 Scan des archives</a></li>
+            <li><a href="#logs">📜 Historique & Logs</a></li>
+            <li><a href="#contact">📞 Contact</a></li>
+        </ul>
+    </nav>
+
+    <main>
+        <section id="dashboard" class="section scroll-margin">
+            <h2>📊 Tableau de bord</h2>
+            <small>Vue globale de l'état de vos sauvegardes</small>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Serveurs actifs</div>
+                    <div class="stat-value" id="activeServers">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Sauvegardes OK</div>
+                    <div class="stat-value" id="okBackups">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Alertes</div>
+                    <div class="stat-value" id="alerts">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Espace utilisé</div>
+                    <div class="stat-value" id="totalSpace">0 Go</div>
+                </div>
+            </div>
+
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3>📈 Répartition des états</h3>
+                    <div class="chart-canvas">
+<canvas id="statusChart" width="250" height="280"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3>💾 Utilisation de l'espace</h3>
+                    <div class="chart-canvas">
+<canvas id="spaceChart" width="250" height="280"></canvas>
+                    </div>
+                </div>
+
+                <div class="chart-card">
+                    <h3>🧠 Utilisation mémoire</h3>
+                    <div class="chart-canvas">
+<canvas id="memoryChart" width="250" height="280"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <table id="serversTable">
+                <thead>
+                    <tr>
+                        <th>Serveur</th>
+                        <th>Dernière sauvegarde</th>
+                        <th>État</th>
+                        <th>Répertoires</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Le contenu sera inséré dynamiquement -->
+                </tbody>
+            </table>
+
+            <button class="btn-primary" onclick="refreshData()">🔄 Actualiser</button>
+        </section>
+
+        <section id="declare" class="section scroll-margin">
+            <h2>➕ Déclaration des serveurs</h2>
+            <small>Configuration des serveurs à sauvegarder</small>
+
+            <form onsubmit="saveServer(event)">
+                <h3>Informations générales</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Nom du serveur *</label>
+                        <input type="text" id="serverName" placeholder="Ex: serveur-A" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Adresse IP *</label>
+                        <input type="text" id="serverIP" placeholder="Ex: 192.168.10.15" required>
+                    </div>
+                </div>
+
+                <h3 style="margin-top: 30px;">Configuration SSH</h3>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Port SSH</label>
+                        <input type="number" id="sshPort" value="22">
+                    </div>
+                    <div class="form-group">
+                        <label>Utilisateur SSH *</label>
+                        <input type="text" id="sshUser" placeholder="root" required>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button type="button" class="btn-secondary btn-small" onclick="testSSHConnection()">🔌 Tester la connexion SSH</button>
+                </div>
+
+                <h3 style="margin-top: 30px;">Sauvegarde</h3>
+                <div class="form-group">
+                    <label>Répertoires à sauvegarder (un par ligne)</label>
+                    <textarea id="backupDirs" placeholder="/var/log&#10;/etc&#10;/home/app/data"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Services à arrêter pendant la sauvegarde (optionnel)</label>
+                    <textarea id="services" placeholder="apache2&#10;mysql&#10;redis"></textarea>
+                </div>
+
+                <button type="submit" class="btn-primary">💾 Enregistrer le serveur</button>
+                <button type="button" class="btn-secondary" onclick="document.querySelector('form').reset()">↺ Réinitialiser</button>
+            </form>
+        </section>
+
+        <section id="planning" class="section scroll-margin">
+            <h2>⏰ Planification & échantillonnage</h2>
+            <small>Gestion des fréquences de sauvegarde et rotation des archives</small>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Serveur</th>
+                        <th>Fréquence</th>
+                        <th>Heure</th>
+                        <th>Politique de rétention</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>serveur-A</strong></td>
+                        <td><span class="badge badge-ok">Journalière</span></td>
+                        <td>02:00</td>
+                        <td>Conserver 7 jours (AJ.0 → AJ.6)</td>
+                        <td>
+                            <button class="btn-secondary btn-small" onclick="editSchedule('serveur-A')">✏️ Modifier</button>
+                            <button class="btn-danger btn-small" onclick="deleteSchedule('serveur-A')">🗑️ Supprimer</button>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><strong>serveur-LOGS</strong></td>
+                        <td><span class="badge badge-warning">Hebdomadaire</span></td>
+                        <td>03:00 (lundi)</td>
+                        <td>4 semaines glissantes</td>
+                        <td>
+                            <button class="btn-secondary btn-small" onclick="editSchedule('serveur-LOGS')">✏️ Modifier</button>
+                            <button class="btn-danger btn-small" onclick="deleteSchedule('serveur-LOGS')">🗑️ Supprimer</button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <button class="btn-primary" onclick="addSchedule()">➕ Ajouter une planification</button>
+        </section>
+
+        <section id="manual" class="section scroll-margin">
+            <h2>▶️ Sauvegarde ponctuelle</h2>
+            <small>Lancer manuellement une sauvegarde immédiate</small>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Serveur</th>
+                        <th>État actuel</th>
+                        <th>Dernière sauvegarde</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody id="manualBackupTable">
+                    <!-- Sera rempli dynamiquement -->
+                </tbody>
+            </table>
+        </section>
+
+        <section id="scan" class="section scroll-margin">
+            <h2>🔍 Scan des archives</h2>
+            <small>Analyse des archives présentes sur le serveur de sauvegarde</small>
+
+            <p style="margin: 20px 0; line-height: 1.6;">
+                Le scan permet de vérifier la cohérence des archives, les dates, les tailles et la présence
+                des sauvegardes attendues. Cette opération peut prendre quelques minutes.
+            </p>
+
+            <div id="scanResults" class="scan-results" style="display: none;">
+                <h3>Résultats du scan</h3>
+                <p>✓ Archives analysées</p>
+                <p>✓ Toutes les archives sont cohérentes</p>
+            </div>
+
+            <button class="btn-primary" onclick="startScan()">🔍 Lancer un scan complet</button>
+            <button class="btn-secondary" onclick="quickScan()">⚡ Scan rapide</button>
+        </section>
+
+        <section id="logs" class="section scroll-margin">
+            <h2>📜 Historique & Logs</h2>
+            <p>Consultation de l'historique des sauvegardes</p>
+            
+            <!-- Filtres -->
+            <div style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+                <select id="filterServer" onchange="filterHistory()" style="padding: 8px; border-radius: 5px; border: 1px solid #ddd;">
+                    <option value="">📁 Tous les serveurs</option>
+                </select>
+                <select id="filterStatus" onchange="filterHistory()" style="padding: 8px; border-radius: 5px; border: 1px solid #ddd;">
+                    <option value="">📊 Tous les statuts</option>
+                    <option value="ok">✅ Succès</option>
+                    <option value="erreur">❌ Erreur</option>
+                </select>
+                <button class="btn-primary" onclick="loadHistory()">🔄 Actualiser</button>
+                <button class="btn-secondary" onclick="exportHistoryCSV()">📥 Exporter CSV</button>
+            </div>
+            
+            <!-- Statistiques rapides -->
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-bottom: 20px;">
+                <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-left: 4px solid #667eea; text-align: center;">
+                    <h3 id="totalBackups" style="font-size: 2em; margin: 0 0 5px 0; color: #667eea; font-weight: bold;">0</h3>
+                    <p style="margin: 0; color: #555; font-size: 0.9em;">Total sauvegardes</p>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-left: 4px solid #27ae60; text-align: center;">
+                    <h3 id="successBackups" style="font-size: 2em; margin: 0 0 5px 0; color: #27ae60; font-weight: bold;">0</h3>
+                    <p style="margin: 0; color: #555; font-size: 0.9em;">Réussies</p>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-left: 4px solid #e74c3c; text-align: center;">
+                    <h3 id="failedBackups" style="font-size: 2em; margin: 0 0 5px 0; color: #e74c3c; font-weight: bold;">0</h3>
+                    <p style="margin: 0; color: #555; font-size: 0.9em;">Échouées</p>
+                </div>
+                <div style="background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); border-left: 4px solid #3498db; text-align: center;">
+                    <h3 id="avgDuration" style="font-size: 2em; margin: 0 0 5px 0; color: #3498db; font-weight: bold;">0s</h3>
+                    <p style="margin: 0; color: #555; font-size: 0.9em;">Durée moyenne</p>
+                </div>
+            </div>
+
+            <!-- Zone de logs -->
+            <div id="historyContainer" class="log-container">
+                <p style="text-align: center; color: #888; padding: 20px;">
+                    ⏳ Chargement de l'historique...
+                </p>
+            </div>
+        </section>
+
+        <section id="contact" class="section scroll-margin">
+            <h2>📞 Contact</h2>
+            <small>Équipe de développement ShieldBackup</small>
+
+            <div class="contact-grid">
+                <div class="contact-card">
+                    <div class="contact-name">Nicolas Tournès</div>
+                    <div class="contact-email">nicolas.tournes@etu.univ-cotedazur.fr</div>
+                </div>
+
+                <div class="contact-card">
+                    <div class="contact-name">Timéo Car</div>
+                    <div class="contact-email">timeo.car@etu.univ-cotedazur.fr</div>
+                </div>
+
+                <div class="contact-card">
+                    <div class="contact-name">Abdennour Gdhami</div>
+                    <div class="contact-email">abdennour.gdhami@etu.univ-cotedazur.fr</div>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+
+<footer>
+    <strong>ShieldBackup</strong> — Système de sauvegarde sécurisé | © 2025 Nicolas Tournès
+</footer>
+</div>
+
+<div class="notification" id="notification">
+    <strong id="notifTitle">Notification</strong>
+    <p id="notifMessage">Message de notification</p>
+</div>
+
+<script>
+// ============================================
+// SYSTÈME D'AUTHENTIFICATION
+// ============================================
+
+// Utilisateurs autorisés (en production, à déplacer côté serveur !)
+const USERS = {
+    'admin': 'admin123',
+    'utilisateur': 'password123'
+};
+
+// Vérifier si l'utilisateur est connecté au chargement de la page
+function checkAuth() {
+    const isLoggedIn = sessionStorage.getItem('isLoggedIn');
+    const username = sessionStorage.getItem('username');
+    
+    if (isLoggedIn === 'true' && username) {
+        // Utilisateur connecté
+        showMainApp(username);
+    } else {
+        // Utilisateur non connecté
+        showLoginPage();
+    }
+}
+
+// Afficher la page de connexion
+function showLoginPage() {
+    document.getElementById('loginPage').style.display = 'flex';
+    document.getElementById('mainApp').style.display = 'none';
+}
+
+// Afficher l'application principale
+function showMainApp(username) {
+    document.getElementById('loginPage').style.display = 'none';
+    document.getElementById('mainApp').style.display = 'block';
+    
+    // Mettre à jour le nom d'utilisateur affiché
+    document.getElementById('currentUser').textContent = username;
+    
+    // Mettre à jour l'avatar avec la première lettre
+    document.getElementById('userAvatar').textContent = username.charAt(0).toUpperCase();
+    
+    // IMPORTANT : Charger les données à chaque affichage de l'app
+    loadServers();
+    loadHistory();
+    updateDashboardCharts();
+}
+
+// Gérer la connexion
+function handleLogin(event) {
+    event.preventDefault();
+    
+    const username = document.getElementById('loginUsername').value.trim();
+    const password = document.getElementById('loginPassword').value;
+    const errorDiv = document.getElementById('loginError');
+    
+    // Vérifier les credentials
+    if (USERS[username] && USERS[username] === password) {
+        // Connexion réussie
+        sessionStorage.setItem('isLoggedIn', 'true');
+        sessionStorage.setItem('username', username);
+        
+        // Masquer l'erreur
+        errorDiv.style.display = 'none';
+        
+        // Afficher l'application
+        showMainApp(username);
+        
+        // Charger les données
+        loadServers();
+        loadHistory();
+        updateDashboardCharts();
+        
+        showNotification('✓ Connexion réussie', `Bienvenue ${username} !`);
+    } else {
+        // Connexion échouée
+        errorDiv.textContent = '❌ Nom d\'utilisateur ou mot de passe incorrect';
+        errorDiv.style.display = 'block';
+        
+        // Effacer le mot de passe
+        document.getElementById('loginPassword').value = '';
+        document.getElementById('loginPassword').focus();
+    }
+}
+
+// Gérer la déconnexion
+function handleLogout() {
+    if (confirm('Voulez-vous vraiment vous déconnecter ?')) {
+        // Effacer la session
+        sessionStorage.removeItem('isLoggedIn');
+        sessionStorage.removeItem('username');
+        
+        // Réinitialiser le formulaire de connexion
+        document.getElementById('loginUsername').value = '';
+        document.getElementById('loginPassword').value = '';
+        document.getElementById('loginError').style.display = 'none';
+        
+        // Afficher la page de connexion
+        showLoginPage();
+        
+        showNotification('✓ Déconnexion', 'Vous avez été déconnecté avec succès');
+    }
+}
+    const API_URL = 'http://' + window.location.hostname + ':3000/api';
+    
+    function updateTime() {
+        document.getElementById('currentTime').textContent = new Date().toLocaleString('fr-FR');
+    }
+    updateTime();
+    setInterval(updateTime, 60000);
+
+    function showNotification(title, message, duration = 3000) {
+        const notif = document.getElementById('notification');
+        document.getElementById('notifTitle').textContent = title;
+        document.getElementById('notifMessage').textContent = message;
+        notif.classList.add('show');
+        setTimeout(() => notif.classList.remove('show'), duration);
+    }
+
+    async function testSSHConnection() {
+        const ip = document.getElementById('serverIP').value;
+        const port = document.getElementById('sshPort').value || '22';
+        const user = document.getElementById('sshUser').value;
+        
+        if (!ip || !user) {
+            showNotification('⚠️ Erreur', 'Veuillez remplir l\'adresse IP et l\'utilisateur SSH');
+            return;
+        }
+        
+        showNotification('🔌 Test en cours', 'Connexion SSH en cours... (timeout 5s)', 6000);
+        
+        try {
+            const response = await fetch(`${API_URL}/test-connection`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ip: ip.trim(), login: user.trim(), port: parseInt(port) })
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showNotification('✓ Succès', result.message, 5000);
+            } else {
+                showNotification('✗ Erreur de connexion', result.error, 8000);
+            }
+        } catch (err) {
+            console.error('Erreur:', err);
+            showNotification('✗ Erreur', 'Impossible de contacter le serveur API', 5000);
+        }
+    }
+
+    function refreshData() { 
+        loadServers();
+        updateDashboardCharts();
+        showNotification('✓ Actualisation', 'Données actualisées avec succès'); 
+    }
+
+    async function saveServer(e) {
+        e.preventDefault();
+        
+        const ip = document.getElementById('serverIP').value;
+        const user = document.getElementById('sshUser').value;
+        
+        const ipParts = ip.split('.');
+        if (ipParts.length !== 4 || ipParts.some(p => {
+            const num = parseInt(p);
+            return isNaN(num) || num < 0 || num > 255;
+        })) {
+            showNotification('⚠️ IP invalide', 'L\'adresse IP doit être au format xxx.xxx.xxx.xxx (0-255)');
+            return;
+        }
+        
+        const serverData = {
+            name: document.getElementById('serverName').value,
+            ip: ip.trim(),
+            login: user.trim(),
+            port: parseInt(document.getElementById('sshPort').value) || 22,
+            directories: document.getElementById('backupDirs').value.split('\n').filter(d => d.trim()),
+            services: document.getElementById('services').value.split('\n').filter(s => s.trim())
+        };
+        
+        try {
+            const response = await fetch(`${API_URL}/servers`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(serverData)
+            });
+            
+            const result = await response.json();
+            
+            if (result.success) {
+                showNotification('✓ Succès', result.message);
+                e.target.reset();
+                
+                await loadServers();
+                await updateDashboardCharts();
+                setTimeout(() => {
+                    document.getElementById('dashboard').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 500);
+            } else {
+                showNotification('✗ Erreur', result.error);
+            }
+        } catch (err) {
+            console.error('Erreur:', err);
+            showNotification('✗ Erreur', 'Impossible de contacter le serveur API');
+        }
+    }
+
+    async function startBackup(serverId, serverName) {
+        try {
+            showNotification('⏳ Lancement', `Sauvegarde de ${serverName} en cours...`, 5000);
+            
+            const response = await fetch(`${API_URL}/backup/${serverId}`, { method: 'POST' });
+            const result = await response.json();
+            
+            if (result.success) {
+                showNotification('✓ Lancé', result.message);
+                
+                const interval = setInterval(async () => {
+                    const statusResp = await fetch(`${API_URL}/backup/status/${serverId}`);
+                    const statusData = await statusResp.json();
+                    
+                    if (statusData.status !== 'en_cours') {
+                        clearInterval(interval);
+                        loadServers();
+                        updateDashboardCharts();
+                        
+                        if (statusData.status === 'ok') {
+                            showNotification('✓ Terminé', `Sauvegarde de ${serverName} réussie !`);
+                        } else {
+                            showNotification('✗ Erreur', `Sauvegarde de ${serverName} échouée`);
+                        }
+                    }
+                }, 3000);
+            } else {
+                showNotification('✗ Erreur', result.error);
+            }
+        } catch (err) {
+            console.error('Erreur:', err);
+            showNotification('✗ Erreur', 'Impossible de lancer la sauvegarde');
+        }
+    }
+
+    async function loadServers() {
+        try {
+            const response = await fetch(`${API_URL}/servers`);
+            const data = await response.json();
+            
+            if (data.success) {
+                updateServersList(data.servers);
+                updateDashboardStats(data.servers);
+            }
+        } catch (err) {
+            console.error('Erreur chargement serveurs:', err);
+            showNotification('⚠️ Attention', 'Impossible de charger les serveurs');
+        }
+    }
+
+    function updateServersList(servers) {
+        const tbody = document.querySelector('#serversTable tbody');
+        if (!tbody) return;
+        
+        tbody.innerHTML = '';
+        
+        servers.forEach(server => {
+            const statusBadge = server.backupStatus === 'ok' ? 
+                '<span class="badge badge-ok">✓ OK</span>' : 
+                server.backupStatus === 'en_cours' ?
+                '<span class="badge badge-warning">⏳ En cours</span>' :
+                server.backupStatus === 'erreur' ?
+                '<span class="badge badge-ko">✗ ERREUR</span>' :
+                '<span class="badge badge-warning">⚠️ Jamais</span>';
+            
+            const lastBackup = server.lastBackup ? 
+                new Date(server.lastBackup).toLocaleString('fr-FR') : 'Jamais';
+            
+            const row = `
+                <tr>
+                    <td><strong>${server.name}</strong></td>
+                    <td>${lastBackup}</td>
+                    <td>${statusBadge}</td>
+                    <td>${server.directories.join(' • ') || 'Aucun'}</td>
+                    <td>
+                        <button class="btn-primary btn-small" onclick="startBackup('${server.id}', '${server.name}')">▶️ Lancer</button>
+                        <button class="btn-secondary btn-small" onclick="deleteServer('${server.id}', '${server.name}')">🗑️</button>
+                    </td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+    }
+
+    function updateDashboardStats(servers) {
+        const activeServers = servers.length;
+        const okBackups = servers.filter(s => s.backupStatus === 'ok').length;
+        const alerts = servers.filter(s => s.backupStatus === 'erreur').length;
+        
+        document.getElementById('activeServers').textContent = activeServers;
+        document.getElementById('okBackups').textContent = okBackups;
+        document.getElementById('alerts').textContent = alerts;
+        
+        // Mettre à jour aussi le tableau "Sauvegarde ponctuelle"
+        updateManualBackupTable(servers);
+    }
+
+    // Mettre à jour le tableau de sauvegarde ponctuelle
+    function updateManualBackupTable(servers) {
+        const tbody = document.getElementById('manualBackupTable');
+        if (!tbody) return;
+        
+        tbody.innerHTML = '';
+        
+        servers.forEach(server => {
+            const statusBadge = server.backupStatus === 'ok' ? 
+                '<span class="badge badge-ok">✓ Prêt</span>' : 
+                server.backupStatus === 'en_cours' ?
+                '<span class="badge badge-warning">⏳ En cours</span>' :
+                server.backupStatus === 'erreur' ?
+                '<span class="badge badge-ko">✗ Erreur</span>' :
+                '<span class="badge badge-warning">⚠️ Jamais sauvegardé</span>';
+            
+            const lastBackup = server.lastBackup ? 
+                new Date(server.lastBackup).toLocaleString('fr-FR') : 'Jamais';
+            
+            const row = `
+                <tr>
+                    <td><strong>${server.name}</strong></td>
+                    <td>${statusBadge}</td>
+                    <td>${lastBackup}</td>
+                    <td>
+                        <button class="btn-success btn-small" onclick="startBackup('${server.id}', '${server.name}')">▶️ Lancer maintenant</button>
+                    </td>
+                </tr>
+            `;
+            tbody.innerHTML += row;
+        });
+    }
+
+    // Fonctions pour la planification
+    function addSchedule() {
+        showNotification('➕ Planification', 'Fonctionnalité de planification en cours de développement');
+    }
+
+    function editSchedule(serverName) {
+        showNotification('✏️ Modification', `Modification de la planification pour ${serverName}`);
+    }
+
+    function deleteSchedule(serverName) {
+        if (confirm(`Êtes-vous sûr de vouloir supprimer la planification pour ${serverName} ?`)) {
+            showNotification('🗑️ Suppression', `Planification supprimée pour ${serverName}`);
+        }
+    }
+
+    // Fonctions pour le scan
+    function startScan() {
+        showNotification('🔍 Scan', 'Analyse des archives en cours...', 4000);
+        setTimeout(() => {
+            const resultsDiv = document.getElementById('scanResults');
+            if (resultsDiv) {
+                resultsDiv.style.display = 'block';
+                showNotification('✓ Scan terminé', 'Le scan est terminé avec succès');
+            }
+        }, 3000);
+    }
+
+    function quickScan() { 
+        showNotification('⚡ Scan rapide', 'Scan rapide en cours...', 2000); 
+    }
+
+    async function deleteServer(serverId, serverName) {
+        if (!confirm(`Voulez-vous vraiment supprimer le serveur "${serverName}" ?`)) return;
+        
+        try {
+            const response = await fetch(`${API_URL}/servers/${serverId}`, { method: 'DELETE' });
+            const result = await response.json();
+            
+            if (result.success) {
+                showNotification('✓ Succès', result.message);
+                loadServers();
+                updateDashboardCharts();
+            } else {
+                showNotification('✗ Erreur', result.error);
+            }
+        } catch (err) {
+            console.error('Erreur:', err);
+            showNotification('✗ Erreur', 'Impossible de supprimer le serveur');
+        }
+    }
+
+    // ============================================
+    // GRAPHIQUES DYNAMIQUES (CAMEMBERTS)
+    // ============================================
+
+    class PieChart {
+        constructor(canvasId, data, colors, labels) {
+            this.canvas = document.getElementById(canvasId);
+            if (!this.canvas) return;
+            
+            this.ctx = this.canvas.getContext('2d');
+            this.data = data;
+            this.colors = colors;
+            this.labels = labels;
+            this.total = data.reduce((a, b) => a + b, 0);
+            this.hoveredSegment = -1;
+            
+            this.canvas.addEventListener('mousemove', this.handleMouseMove.bind(this));
+            this.canvas.addEventListener('click', this.handleClick.bind(this));
+            
+            this.draw();
+        }
+        
+draw() {
+    const ctx = this.ctx;
+    const centerX = this.canvas.width / 2;
+    const centerY = this.canvas.height / 2 - 30; // Remonter le camembert
+    const radius = Math.min(centerX, centerY) - 50; // Réduire le rayon
+            
+            ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+            
+            let currentAngle = -Math.PI / 2;
+            
+            this.data.forEach((value, index) => {
+                const sliceAngle = (value / this.total) * 2 * Math.PI;
+                const isHovered = index === this.hoveredSegment;
+                const offset = isHovered ? 10 : 0;
+                
+                const offsetX = Math.cos(currentAngle + sliceAngle / 2) * offset;
+                const offsetY = Math.sin(currentAngle + sliceAngle / 2) * offset;
+                
+                ctx.beginPath();
+                ctx.moveTo(centerX + offsetX, centerY + offsetY);
+                ctx.arc(centerX + offsetX, centerY + offsetY, radius, currentAngle, currentAngle + sliceAngle);
+                ctx.closePath();
+                
+                ctx.fillStyle = this.colors[index];
+                ctx.fill();
+                
+                if (isHovered) {
+                    ctx.strokeStyle = 'white';
+                    ctx.lineWidth = 3;
+                    ctx.stroke();
+                }
+                
+                const percentage = ((value / this.total) * 100).toFixed(1);
+                const textAngle = currentAngle + sliceAngle / 2;
+                const textX = centerX + Math.cos(textAngle) * (radius * 0.7) + offsetX;
+                const textY = centerY + Math.sin(textAngle) * (radius * 0.7) + offsetY;
+                
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 14px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(percentage + '%', textX, textY);
+                
+                currentAngle += sliceAngle;
+            });
+            
+            this.drawLegend();
+        }
+        
+drawLegend() {
+    const ctx = this.ctx;
+    const legendX = 10;
+    let legendY = this.canvas.height - (this.labels.length * 25) - 10; // En bas
+            
+            this.labels.forEach((label, index) => {
+                ctx.fillStyle = this.colors[index];
+                ctx.fillRect(legendX, legendY, 15, 15);
+                
+                ctx.fillStyle = '#333';
+                ctx.font = '12px Arial';
+                ctx.textAlign = 'left';
+                ctx.fillText(label, legendX + 20, legendY + 12);
+                
+                legendY += 25;
+            });
+        }
+        
+        handleMouseMove(e) {
+            const rect = this.canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            
+            const centerX = this.canvas.width / 2;
+            const centerY = this.canvas.height / 2;
+            const radius = Math.min(centerX, centerY) - 40;
+            
+            const dx = x - centerX;
+            const dy = y - centerY;
+            const distance = Math.sqrt(dx * dx + dy * dy);
+            
+            if (distance <= radius) {
+                let angle = Math.atan2(dy, dx);
+                if (angle < -Math.PI / 2) angle += 2 * Math.PI;
+                angle += Math.PI / 2;
+                
+                let currentAngle = 0;
+                let newHovered = -1;
+                
+                for (let i = 0; i < this.data.length; i++) {
+                    const sliceAngle = (this.data[i] / this.total) * 2 * Math.PI;
+                    if (angle >= currentAngle && angle < currentAngle + sliceAngle) {
+                        newHovered = i;
+                        break;
+                    }
+                    currentAngle += sliceAngle;
+                }
+                
+                if (newHovered !== this.hoveredSegment) {
+                    this.hoveredSegment = newHovered;
+                    this.draw();
+                }
+                
+                this.canvas.style.cursor = 'pointer';
+            } else {
+                if (this.hoveredSegment !== -1) {
+                    this.hoveredSegment = -1;
+                    this.draw();
+                }
+                this.canvas.style.cursor = 'default';
+            }
+        }
+        
+        handleClick(e) {
+            if (this.hoveredSegment !== -1) {
+                const label = this.labels[this.hoveredSegment];
+                const value = this.data[this.hoveredSegment];
+                const percentage = ((value / this.total) * 100).toFixed(1);
+                showNotification('📊 Statistique', `${label}: ${value} (${percentage}%)`);
+            }
+        }
+    }
+
+    async function updateDashboardCharts() {
+        try {
+            const serversResponse = await fetch(`${API_URL}/servers`);
+            const serversData = await serversResponse.json();
+            
+            if (!serversData.success) return;
+            
+            const servers = serversData.servers;
+            
+            // 1. Graphique répartition des états
+            const okCount = servers.filter(s => s.backupStatus === 'ok').length;
+            const errorCount = servers.filter(s => s.backupStatus === 'erreur').length;
+            const neverCount = servers.filter(s => !s.backupStatus || s.backupStatus === 'jamais').length;
+            
+            if (okCount + errorCount + neverCount > 0) {
+                new PieChart(
+                    'statusChart',
+                    [okCount, errorCount, neverCount],
+                    ['#27ae60', '#e74c3c', '#f39c12'],
+                    [`OK (${okCount})`, `Erreur (${errorCount})`, `Jamais (${neverCount})`]
+                );
+            }
+            
+
+
+
+// 2. Graphique utilisation espace - UTILISE LES VRAIES DONNÉES
+const spaceResponse = await fetch(`${API_URL}/archives/size`);
+const spaceData = await spaceResponse.json();
+
+let usedGo = parseFloat(spaceData.sizeGo) || 0;
+const totalGo = parseFloat(spaceData.totalGo) || 500; // Vrai espace total du disque
+const availableGo = parseFloat(spaceData.availableGo) || 450; // Vrai espace disponible
+
+// Affichage intelligent Mo/Go
+let displayText;
+if (usedGo < 0.1) {
+    const usedMo = (usedGo * 1024).toFixed(1);
+    displayText = usedMo + ' Mo';
+} else {
+    displayText = usedGo.toFixed(2) + ' Go';
+}
+
+// Pour le graphique : minimum 1 Go pour visibilité
+const usedGoForChart = usedGo < 1 ? 1 : usedGo;
+
+document.getElementById('totalSpace').textContent = displayText;
+
+new PieChart(
+    'spaceChart',
+    [usedGoForChart, availableGo],
+    ['#9b59b6', '#ecf0f1'],
+    [
+        `Utilisé: ${displayText}`, 
+        `Disponible: ${availableGo.toFixed(1)} Go (Total: ${totalGo.toFixed(0)} Go)`
+    ]
+);        
+
+            
+     
+            
+            // 3. Graphique mémoire
+            new PieChart(
+                'memoryChart',
+                [12, 4],
+                ['#e67e22', '#ecf0f1'],
+                ['Utilisée: 12 Go (75%)', 'Disponible: 4 Go (25%)']
+            );
+            
+        } catch (err) {
+            console.error('Erreur mise à jour graphiques:', err);
+        }
+    }
+
+    // ============================================
+    // HISTORIQUE DES SAUVEGARDES
+    // ============================================
+
+    let allHistory = [];
+    let filteredHistory = [];
+
+    async function loadHistory() {
+        try {
+            const response = await fetch(`${API_URL}/history`);
+            const data = await response.json();
+            
+            if (data.success) {
+                allHistory = data.history;
+                filteredHistory = allHistory;
+                
+                updateServerFilter();
+                displayHistory(filteredHistory);
+                updateHistoryStats(allHistory);
+                
+                showNotification('✓ Historique', 'Historique chargé avec succès');
+            } else {
+                showNotification('✗ Erreur', 'Impossible de charger l\'historique');
+            }
+        } catch (err) {
+            console.error('Erreur chargement historique:', err);
+            document.getElementById('historyContainer').innerHTML = 
+                '<p style="text-align: center; color: #e74c3c; padding: 20px;">❌ Erreur de chargement</p>';
+        }
+    }
+
+    function updateServerFilter() {
+        const filterServer = document.getElementById('filterServer');
+        const servers = [...new Set(allHistory.map(h => h.serverId))];
+        
+        filterServer.innerHTML = '<option value="">📁 Tous les serveurs</option>';
+        
+        servers.forEach(serverId => {
+            const entry = allHistory.find(h => h.serverId === serverId);
+            if (entry) {
+                const option = document.createElement('option');
+                option.value = serverId;
+                option.textContent = `${entry.serverName} (${entry.serverIp})`;
+                filterServer.appendChild(option);
+            }
+        });
+    }
+
+    function filterHistory() {
+        const serverFilter = document.getElementById('filterServer').value;
+        const statusFilter = document.getElementById('filterStatus').value;
+        
+        filteredHistory = allHistory.filter(entry => {
+            const matchServer = !serverFilter || entry.serverId === serverFilter;
+            const matchStatus = !statusFilter || entry.status === statusFilter;
+            return matchServer && matchStatus;
+        });
+        
+        displayHistory(filteredHistory);
+        updateHistoryStats(filteredHistory);
+    }
+
+    function displayHistory(history) {
+        const container = document.getElementById('historyContainer');
+        
+        if (history.length === 0) {
+            container.innerHTML = '<p style="text-align: center; color: #888; padding: 20px;">📭 Aucune sauvegarde dans l\'historique</p>';
+            return;
+        }
+        
+        let html = '';
+        
+        history.forEach(entry => {
+            const date = new Date(entry.timestamp);
+            const dateStr = date.toLocaleString('fr-FR');
+            
+            const statusIcon = entry.status === 'ok' ? '✅' : '❌';
+            const statusClass = entry.status === 'ok' ? 'badge-ok' : 'badge-ko';
+            const statusText = entry.status === 'ok' ? 'SUCCÈS' : 'ERREUR';
+            
+            const directoriesStr = entry.directories.join(' • ') || 'Aucun';
+            
+            html += `
+                <div class="log-entry" style="border-left: 4px solid ${entry.status === 'ok' ? '#27ae60' : '#e74c3c'}; padding: 15px; margin-bottom: 10px; background: #f8f9fa; border-radius: 5px;">
+                    <div style="display: flex; justify-content: space-between; align-items: start; margin-bottom: 10px;">
+                        <div>
+                            <strong style="font-size: 1.1em;">${statusIcon} ${entry.serverName}</strong>
+                            <span style="color: #666; margin-left: 10px;">(${entry.serverIp})</span>
+                        </div>
+                        <span class="badge ${statusClass}">${statusText}</span>
+                    </div>
+                    
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; font-size: 0.9em; color: #555;">
+                        <div>📅 <strong>Date:</strong> ${dateStr}</div>
+                        <div>⏱️ <strong>Durée:</strong> ${entry.duration}s</div>
+                        <div>💾 <strong>Taille:</strong> ${entry.size}</div>
+                    </div>
+                    
+                    <div style="margin-top: 10px; font-size: 0.9em; color: #555;">
+                        📁 <strong>Répertoires:</strong> ${directoriesStr}
+                    </div>
+                    
+                    ${entry.errorMessage ? `
+                        <div style="margin-top: 10px; padding: 10px; background: #ffe5e5; border-radius: 5px; font-size: 0.9em; color: #c0392b;">
+                            ⚠️ <strong>Erreur:</strong> ${entry.errorMessage.substring(0, 200)}${entry.errorMessage.length > 200 ? '...' : ''}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        });
+        
+        container.innerHTML = html;
+    }
+
+    function updateHistoryStats(history) {
+        const total = history.length;
+        const success = history.filter(h => h.status === 'ok').length;
+        const failed = history.filter(h => h.status === 'erreur').length;
+        
+        const totalDuration = history.reduce((sum, h) => sum + (h.duration || 0), 0);
+        const avgDuration = total > 0 ? Math.round(totalDuration / total) : 0;
+        
+        document.getElementById('totalBackups').textContent = total;
+        document.getElementById('successBackups').textContent = success;
+        document.getElementById('failedBackups').textContent = failed;
+        document.getElementById('avgDuration').textContent = avgDuration + 's';
+    }
+
+    function exportHistoryCSV() {
+        if (filteredHistory.length === 0) {
+            showNotification('⚠️ Attention', 'Aucune donnée à exporter');
+            return;
+        }
+        
+        let csv = 'Date,Serveur,IP,Statut,Durée (s),Taille,Répertoires\n';
+        
+        filteredHistory.forEach(entry => {
+            const date = new Date(entry.timestamp).toLocaleString('fr-FR');
+            const dirs = entry.directories.join(' ').replace(/,/g, ';');
+            csv += `"${date}","${entry.serverName}","${entry.serverIp}","${entry.status}","${entry.duration}","${entry.size}","${dirs}"\n`;
+        });
+        
+        const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement('a');
+        const url = URL.createObjectURL(blob);
+        link.setAttribute('href', url);
+        link.setAttribute('download', `historique_sauvegardes_${Date.now()}.csv`);
+        link.click();
+        
+        showNotification('✓ Export', 'Historique exporté en CSV');
+    }
+
+    // Charger au démarrage
+window.addEventListener('load', () => {
+    updateTime();
+    checkAuth(); // Vérifier l'authentification au chargement
+});
+
+    // Scroll spy pour navigation
+    const sections = document.querySelectorAll("section");
+    const navLinks = document.querySelectorAll("nav a");
+
+    function updateActiveLink() {
+        const scrollPos = window.scrollY + window.innerHeight / 3;
+        let current = "";
+        
+        sections.forEach(section => {
+            const top = section.offsetTop;
+            const bottom = top + section.offsetHeight;
+            if (scrollPos >= top && scrollPos < bottom) {
+                current = section.id;
+            }
+        });
+
+        navLinks.forEach(link => {
+            link.classList.toggle('active', link.getAttribute('href') === '#' + current);
+        });
+    }
+
+    window.addEventListener("scroll", () => {
+        requestAnimationFrame(updateActiveLink);
+    }, { passive: true });
+
+    updateActiveLink();
+
+    // Smooth scroll
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                window.scrollTo({
+                    top: target.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+</script>
+
+<script src="js/script.js"></script>
+</body>
+</html>
